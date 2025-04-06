@@ -6,8 +6,8 @@
     font-weight: 400;
 
     color-scheme: light dark;
-    color: rgba(255, 255, 255, 0.87);
-    background-color: #212121;
+    background-color: rgba(255, 255, 255);
+    color: black;
 
     font-synthesis: none;
     text-rendering: optimizeLegibility;
@@ -16,11 +16,7 @@
     -webkit-text-size-adjust: 100%;
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+
 
 .chatGPT-app {
     max-width: 1200px;
@@ -114,7 +110,7 @@ footer {
 .chat-bubble.bot .post {
     background: #21212c;
 }
-.loader {
+.loader1 {
     padding: 0 20px;
     width: fit-content;
     max-width: 100%;
@@ -150,7 +146,7 @@ footer {
 .loader {
     width: 65px;
     aspect-ratio: 1;
-    --g: radial-gradient(farthest-side, #0000 calc(95% - 3px), #fff calc(100% - 3px) 98%, #0000 101%) no-repeat;
+    --g: radial-gradient(farthest-side, transparent calc(95% - 3px), #1B4A7E calc(100% - 3px) 98%, transparent 101%) no-repeat;
     background: var(--g), var(--g), var(--g);
     background-size: 30px 30px;
     animation: l10 1.5s infinite;
