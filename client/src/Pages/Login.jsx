@@ -5,6 +5,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../config/firebase"; // Import Firebase auth
 import toast, { Toaster } from "react-hot-toast"; // Import react-hot-toast
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai"; // Import icons from react-icons
+import { motion } from "framer-motion"; // Import framer-motion
 
 const Login = () => {
   const { register, handleSubmit, formState: { errors } } = useForm(); // Initialize react-hook-form
@@ -41,7 +42,12 @@ const Login = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#1B4A7E]">
       <Toaster position="top-center" toastOptions={{ style: { background: "#fff", color: "#333" } }} />
-      <div className="w-[350px] p-6">
+      <motion.div
+        className="w-[350px] p-6"
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5 }}
+      >
         <h1 className="text-white text-2xl font-bold text-center mb-5">LinguaLatvia</h1>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 text-black">
           <div>
@@ -51,7 +57,16 @@ const Login = () => {
               {...register("email", { required: "Email is required" })} // Register email field
               className="w-full px-3 py-2 rounded-sm bg-white border border-black focus:outline-none"
             />
-            {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>} {/* Show email error */}
+            {errors.email && (
+              <motion.p
+                className="text-red-500 text-xs mt-1"
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                {errors.email.message}
+              </motion.p>
+            )}
           </div>
           <div>
             <label className="text-white text-sm block mb-1">Password</label>
@@ -71,16 +86,37 @@ const Login = () => {
                 {showPassword ? <AiFillEyeInvisible size={20} /> : <AiFillEye size={20} />} {/* Icon changes */}
               </span>
             </div>
-            {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>} {/* Show password error */}
+            {errors.password && (
+              <motion.p
+                className="text-red-500 text-xs mt-1"
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                {errors.password.message}
+              </motion.p>
+            )}
           </div>
           <div className="flex justify-center mt-4">
-            <button
+            <motion.button
               type="submit"
               className="bg-black cursor-pointer text-white px-6 py-2 rounded-sm hover:bg-gray-900"
               disabled={loading} // Disable button when loading
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
-              {loading ? "Logging In..." : "Login"} {/* Show loading text */}
-            </button>
+              {loading ? (
+                <motion.span
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse" }}
+                >
+                  Logging In...
+                </motion.span>
+              ) : (
+                "Login"
+              )}
+            </motion.button>
           </div>
           <div className="flex justify-center mt-2">
             <p className="text-white text-sm">
@@ -94,7 +130,7 @@ const Login = () => {
             </p>
           </div>
         </form>
-      </div>
+      </motion.div>
     </div>
   );
 };

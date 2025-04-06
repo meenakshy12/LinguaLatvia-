@@ -6,6 +6,7 @@ import { auth, firebaseDb } from "../config/firebase";
 import { doc, setDoc } from "firebase/firestore"; // Firestore methods
 import toast, { Toaster } from "react-hot-toast"; // Import react-hot-toast
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai"; // Import icons from react-icons
+import { motion } from "framer-motion"; // Import framer-motion
 
 const SignUp = () => {
   const { register, handleSubmit, watch, formState: { errors } } = useForm();
@@ -64,9 +65,14 @@ const SignUp = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#1B4A7E] ">
+    <div className="min-h-screen flex items-center justify-center bg-[#1B4A7E]">
       <Toaster position="top-center" toastOptions={{ style: { background: "#fff", color: "#333" } }} />
-      <div className="w-[350px] p-6">
+      <motion.div
+        className="w-[350px] p-6"
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5 }}
+      >
         <h1 className="text-white text-2xl font-bold text-center mb-5">LinguaLatvia</h1>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 text-black">
           <div>
@@ -76,7 +82,16 @@ const SignUp = () => {
               {...register("email", { required: "Email is required" })}
               className="w-full px-3 py-2 rounded-sm text-black bg-white border border-black focus:outline-none"
             />
-            {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
+            {errors.email && (
+              <motion.p
+                className="text-red-500 text-xs mt-1"
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                {errors.email.message}
+              </motion.p>
+            )}
           </div>
           <div>
             <label className="text-white text-sm block mb-1">Full Name</label>
@@ -85,7 +100,16 @@ const SignUp = () => {
               {...register("fullName", { required: "Full Name is required" })}
               className="w-full px-3 py-2 rounded-sm bg-white border border-black focus:outline-none"
             />
-            {errors.fullName && <p className="text-red-500 text-xs mt-1">{errors.fullName.message}</p>}
+            {errors.fullName && (
+              <motion.p
+                className="text-red-500 text-xs mt-1"
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                {errors.fullName.message}
+              </motion.p>
+            )}
           </div>
           <div>
             <label className="text-white text-sm block mb-1">University Name</label>
@@ -114,7 +138,16 @@ const SignUp = () => {
                 {showPassword ? <AiFillEyeInvisible size={20} /> : <AiFillEye size={20} />} {/* Icon changes */}
               </span>
             </div>
-            {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>}
+            {errors.password && (
+              <motion.p
+                className="text-red-500 text-xs mt-1"
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                {errors.password.message}
+              </motion.p>
+            )}
           </div>
           <div>
             <label className="text-white text-sm block mb-1">Confirm Password</label>
@@ -134,13 +167,25 @@ const SignUp = () => {
             {errors.confirmPassword && <p className="text-red-500 text-xs mt-1">{errors.confirmPassword.message}</p>}
           </div>
           <div className="flex justify-center mt-4">
-            <button
+            <motion.button
               type="submit"
               className="cursor-pointer bg-black text-white px-6 py-2 rounded-sm hover:bg-gray-900"
               disabled={loading} // Disable button when loading
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
-              {loading ? "Signing Up..." : "Sign Up"} {/* Show loading text */}
-            </button>
+              {loading ? (
+                <motion.span
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse" }}
+                >
+                  Signing Up...
+                </motion.span>
+              ) : (
+                "Sign Up"
+              )}
+            </motion.button>
           </div>
           <div className="flex justify-center mt-2">
             <p className="text-white text-sm">
@@ -154,7 +199,7 @@ const SignUp = () => {
             </p>
           </div>
         </form>
-      </div>
+      </motion.div>
     </div>
   );
 };
