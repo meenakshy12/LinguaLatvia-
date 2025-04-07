@@ -163,7 +163,7 @@ const Chatbot = () => {
                 ))}
             </div>
 
-            <div className="pb-5">
+            <div className="pb-5 pt-3  drop-shadow-2xl ">
                 <form
                     onSubmit={(e) => {
                         e.preventDefault();
