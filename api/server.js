@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import * as dotenv from "dotenv";
 import axios from "axios"
+import { deeplClient } from "./config/deepl.js";
 
 dotenv.config();
 
@@ -20,6 +21,13 @@ app.get("/", async (req, res) => {
 
 app.post("/", async (req, res) => {
     try {
+        console.log("🔍 Request Body:", req.body); // ✅ Log the request body
+      
+        // Check if the request body is empty
+        const result = await deeplClient.translateText(req.body.input, null, "en-US"); // Updated targetLang to 'en-US'
+        // console.log("result:", result); // ✅ Log the translation result
+        const translatedText = result.text;
+        console.log("Translated Text:", translatedText); // ✅ Log the translated text
         const options = {
             method: 'POST',
             url: 'https://api.openai.com/v1/chat/completions',
@@ -36,7 +44,7 @@ app.post("/", async (req, res) => {
                     },
                     {
                         role: 'user',
-                        content: req.body.input
+                        content: translatedText
                     }
                 ],
                 temperature: 0.9,
@@ -49,9 +57,13 @@ app.post("/", async (req, res) => {
         const response = await axios.request(options);
         const content = response.data.choices[0].message.content;
         console.log("content:", content);
+        //  reconvert into latvian language
 
+        const result2 = await deeplClient.translateText(content, null, "lv"); // Updated targetLang to 'lv'
+        // console.log("result:", result); // ✅ Log the translation result
+        console.log("Translated Text:", result2.text); // ✅ Log the translated text
         res.status(200).send({
-            bot: content,
+            bot: result2.text,
         });
     } catch (error) {
         console.log("FAILED:", req.body.input);
