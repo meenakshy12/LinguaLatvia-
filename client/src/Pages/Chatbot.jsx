@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import user from "../assets/user2.png";
 import bot from "../assets/assistant.png";
 import { FiSend } from "react-icons/fi";
+import Navbar from '../components/Navbar';
 
 const Chatbot = () => {
     const [input, setInput] = useState("");
@@ -91,11 +92,12 @@ const Chatbot = () => {
 
     return (
         <div className="flex flex-col h-screen bg-gradient-to-b from-blue-100 to-blue-50">
+            <Navbar />
             <div className="flex-1 overflow-y-auto p-6 space-y-6 max-w-4xl mx-auto w-full layout">
                 <AnimatePresence>
                     {posts.length === 0 && (
                         <motion.div
-                            className="text-center flex flex-col items-center justify-center mt-[30vh]  "
+                            className="text-center flex flex-col items-center justify-center mt-[25vh]  "
                             initial={{ y: 100, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             exit={{ y: -100, opacity: 0 }}
@@ -169,7 +171,7 @@ const Chatbot = () => {
                         e.preventDefault();
                         onSubmit();
                     }}
-                    className="flex items-center max-w-3xl mx-auto relative"
+                    className="flex items-center max-w-3xl mx-auto relative px-3"
                 >
                     <motion.input
                         type="text"
@@ -184,10 +186,9 @@ const Chatbot = () => {
                     <motion.button
                         type="button"
                         onClick={onSubmit}
-                        className={`ml-4 absolute w-12 h-12 cursor-pointer right-0 rounded-full ${
+                        className={`ml-4 absolute w-12 h-12 cursor-pointer right-3 rounded-full ${
                             isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-[#1B4A7E]"
                         } text-white flex items-center justify-center`}
-                        whileHover={!isLoading ? { scale: 1.1 } : {}}
                         whileTap={!isLoading ? { scale: 0.9 } : {}}
                         disabled={isLoading} // Prevent sending while loading
                     >
