@@ -76,7 +76,10 @@ Be encouraging and supportive. Make the conversation feel natural and not like a
     // console.log("result:", result); // ✅ Log the translation result
     console.log("Translated Text:", result2.text); // ✅ Log the translated text
     res.status(200).send({
-      bot: result2.text,
+      bot: {
+        en: content,
+        lt:result2.text,
+      }
     });
   } catch (error) {
     console.log("FAILED:", req.body.input);

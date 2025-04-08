@@ -33,21 +33,24 @@ const Chatbot = () => {
         return data;
     };
 
-    const autoTypingBotResponse = (text) => {
+    const autoTypingBotResponse = (text, lang = "lt") => {
         let index = 0;
         let interval = setInterval(() => {
-            if (index < text.length) {
+            if (index < text[lang].length) {
                 setPosts((prevState) => {
                     let lastItem = prevState.pop();
                     if (lastItem.type !== "bot") {
                         prevState.push({
                             type: "bot",
-                            post: text.charAt(index - 1),
+                            post: { ...text, currentLang: lang },
                         });
                     } else {
                         prevState.push({
                             type: "bot",
-                            post: lastItem.post + text.charAt(index - 1),
+                            post: {
+                                ...lastItem.post,
+                                [lang]: lastItem.post[lang] + text[lang].charAt(index),
+                            },
                         });
                     }
                     return [...prevState];
@@ -62,11 +65,11 @@ const Chatbot = () => {
     const onSubmit = () => {
         if (input.trim() === "" || isLoading) return; // Prevent sending if loading
         setIsLoading(true); // Set loading to true
-        updatePosts(input);
-        updatePosts("loading...", false, true);
+        updatePosts(input, false); // Add user message to posts
+        updatePosts({ en: "loading...", lt: "ielādē..." }, false, true); // Show loading message
         setInput("");
         fetchBotResponse().then((res) => {
-            updatePosts(res.bot.trim(), true);
+            updatePosts({ en: res.bot.en.trim(), lt: res.bot.lt.trim() }, true);
             setIsLoading(false); // Reset loading after response
         });
     };
@@ -153,7 +156,31 @@ const Chatbot = () => {
                                         ))}
                                     </div>
                                 ) : (
-                                    <p className="leading-relaxed"><ChatgptTextRender text={post.post}/></p>
+                                    <p className="leading-relaxed">
+                                        {post.type === "user" ? post.post : <ChatgptTextRender text={post.post[post.post.currentLang]} />}
+                                    </p>
+                                )}
+                                {post.type === "bot" && ( // Only show translate button for bot responses
+                                    <button
+                                        onClick={() =>
+                                            setPosts((prevState) =>
+                                                prevState.map((p, i) =>
+                                                    i === index
+                                                        ? {
+                                                              ...p,
+                                                              post: {
+                                                                  ...p.post,
+                                                                  currentLang: p.post.currentLang === "lt" ? "en" : "lt",
+                                                              },
+                                                          }
+                                                        : p
+                                                )
+                                            )
+                                        }
+                                        className="text-sm text-blue-500 underline mt-2 cursor-pointer"
+                                    >
+                                        {post.post.currentLang === "lt" ? "Translate to English" : "Tulkot latviski"}
+                                    </button>
                                 )}
                             </div>
                             {post.type === "user" && (
