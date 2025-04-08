@@ -92,9 +92,9 @@ const Chatbot = () => {
     };
 
     return (
-        <div className="flex flex-col h-screen bg-gradient-to-b from-blue-100 to-blue-50">
+        <div className="flex flex-col h-screen bg-gradient-to-b from-blue-100 to-blue-50 ">
             <Navbar />
-            <div className="flex-1 overflow-y-auto p-6 space-y-6 max-w-4xl mx-auto w-full layout">
+            <div className="flex-1 overflow-y-auto mt-0.5 p-6 space-y-6 max-w-4xl mx-auto w-full layout">
                 <AnimatePresence>
                     {posts.length === 0 && (
                         <motion.div
@@ -133,8 +133,8 @@ const Chatbot = () => {
                                     post.type === "user"
                                         ? "bg-[#1B4A7E] text-white rounded-br-none"
                                         : post.type === "loading"
-                                        ? "bg-gray-100 text-gray-800 rounded-bl-none"
-                                        : "bg-gray-100 text-gray-800 rounded-bl-none"
+                                        ? "bg-gray-50 text-gray-800 rounded-bl-none"
+                                        : "bg-gray-50 text-gray-800 rounded-bl-none"
                                 }`}
                             >
                                 {post.type === "loading" ? (
