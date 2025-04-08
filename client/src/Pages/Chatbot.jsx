@@ -6,6 +6,7 @@ import user from "../assets/user2.png";
 import bot from "../assets/assistant.png";
 import { FiSend } from "react-icons/fi";
 import Navbar from '../components/Navbar';
+import ChatgptTextRender from '../components/ChatgptTextRender';
 
 const Chatbot = () => {
     const [input, setInput] = useState("");
@@ -152,7 +153,7 @@ const Chatbot = () => {
                                         ))}
                                     </div>
                                 ) : (
-                                    <p className="leading-relaxed">{post.post}</p>
+                                    <p className="leading-relaxed"><ChatgptTextRender text={post.post}/></p>
                                 )}
                             </div>
                             {post.type === "user" && (
