@@ -158,7 +158,7 @@ Replace the Firebase API keys with your own credentials.
 
 #### Start the React App
 
-To start the React app, run:
+To start the React app,open terminal in LinguaLatvia folder and run:
 
 ```bash
 npm run dev
