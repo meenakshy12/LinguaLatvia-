@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth"; // Corrected import
 import { auth, firebaseDb } from "../config/firebase";
 import { doc, setDoc } from "firebase/firestore"; // Firestore methods
 import toast, { Toaster } from "react-hot-toast"; // Import react-hot-toast
@@ -38,12 +38,14 @@ const SignUp = () => {
         email: data.email,
       });
 
-      toast.success("User registered successfully!");
+      // Corrected sendEmailVerification method
+      await sendEmailVerification(user);
+      toast.success("User registered successfully. Please check your inbox for verification of your email!");
       // Reset the form after successful submission
       document.querySelector("form").reset();
-      setTimeout(() => {
-       navigate("/");
-      }, 1000);
+      // setTimeout(() => {
+      //  navigate("/");
+      // }, 1000);
     } catch (error) {
       console.error("Firestore Write Error:", error);
       if (error.code === "permission-denied") {
@@ -66,8 +68,7 @@ const SignUp = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#1B4A7E]">
-      <Toaster position="top-center" toastOptions={{ style: { background: "#fff", color: "#333" } }} />
-      <motion.div
+    <motion.div
         className="w-[350px] p-6"
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}

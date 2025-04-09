@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form"; // Import react-hook-form
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { sendEmailVerification, signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../config/firebase"; // Import Firebase auth
-import toast, { Toaster } from "react-hot-toast"; // Import react-hot-toast
+import toast from "react-hot-toast"; // Import react-hot-toast
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai"; // Import icons from react-icons
 import { motion } from "framer-motion"; // Import framer-motion
 
@@ -17,6 +17,13 @@ const Login = () => {
     setLoading(true); // Start loading
     try {
       await signInWithEmailAndPassword(auth, data.email, data.password);
+      // Log the user in
+      if(auth.currentUser.emailVerified === false) {
+        await sendEmailVerification(auth.currentUser); // Send email verification
+        toast.error("Please verify your email to access the app!"); // Show error message if email is not verified
+        return;
+      }
+
       toast.success("Login successful!");
       setTimeout(() => {
         navigate("/"); // Navigate to the home page
@@ -41,7 +48,6 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#1B4A7E]">
-      <Toaster position="top-center" toastOptions={{ style: { background: "#fff", color: "#333" } }} />
       <motion.div
         className="w-[350px] p-6"
         initial={{ opacity: 0, scale: 0.9 }}
