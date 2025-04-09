@@ -7,11 +7,12 @@ import bot from "../assets/assistant.png";
 import { FiSend } from "react-icons/fi";
 import Navbar from '../components/Navbar';
 import ChatgptTextRender from '../components/ChatgptTextRender';
+import TypingLoader from '../components/TypingLoader';
 
 const Chatbot = () => {
     const [input, setInput] = useState("");
     const [posts, setPosts] = useState([]);
-    const [isLoading, setIsLoading] = useState(false); // Add loading state
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const layoutElement = document.querySelector(".layout");
@@ -33,59 +34,81 @@ const Chatbot = () => {
         return data;
     };
 
-    const autoTypingBotResponse = (text, lang = "lt") => {
+    const autoTypingBotResponse = (text, lang = "lt", messageId) => {
         let index = 0;
+        const targetText = text[lang];
+
         let interval = setInterval(() => {
-            if (index < text[lang].length) {
-                setPosts((prevState) => {
-                    let lastItem = prevState.pop();
-                    if (lastItem.type !== "bot") {
-                        prevState.push({
-                            type: "bot",
-                            post: { ...text, currentLang: lang },
-                        });
-                    } else {
-                        prevState.push({
-                            type: "bot",
-                            post: {
-                                ...lastItem.post,
-                                [lang]: lastItem.post[lang] + text[lang].charAt(index),
-                            },
-                        });
+            setPosts((prevState) => {
+                return prevState.map((message) => {
+                    if (message.id === messageId && message.type === "bot") {
+                        if (index < targetText.length) {
+                            message.post[lang] = targetText.substring(0, index + 1);
+                        } else {
+                            clearInterval(interval);
+                        }
                     }
-                    return [...prevState];
+                    return message;
                 });
-                index++;
-            } else {
-                clearInterval(interval);
-            }
-        }, 20);
+            });
+            index++;
+        }, 30); // Ensures smooth typing for the entire text
     };
 
     const onSubmit = () => {
-        if (input.trim() === "" || isLoading) return; // Prevent sending if loading
-        setIsLoading(true); // Set loading to true
-        updatePosts(input, false); // Add user message to posts
-        updatePosts({ en: "loading...", lt: "ielādē..." }, false, true); // Show loading message
+        if (input.trim() === "" || isLoading) return;
+        setIsLoading(true);
+
+        const userMessage = {
+            id: Date.now(),
+            type: "user",
+            post: { lt: input, en: input, currentLang: "lt" },
+        };
+
+        setPosts((prevState) => [...prevState, userMessage]);
         setInput("");
+
+        // Add a loading message in the response box
+        const loadingMessage = {
+            id: Date.now() + 1,
+            type: "bot",
+            post: { lt: "", en: "", currentLang: "lt" },
+            isLoading: true,
+        };
+        setPosts((prevState) => [...prevState, loadingMessage]);
+
         fetchBotResponse().then((res) => {
-            updatePosts({ en: res.bot.en.trim(), lt: res.bot.lt.trim() }, true);
-            setIsLoading(false); // Reset loading after response
+            setPosts((prevState) => {
+                return prevState.map((message) => {
+                    if (message.id === loadingMessage.id) {
+                        setTimeout(() => {
+                            message.isLoading = false;
+                        }, 500);
+                            
+                        message.post = {
+                            lt: res.bot.lt.trim(),
+                            en: res.bot.en.trim(),
+                            currentLang: "lt",
+                        };
+                    }
+                    return message;
+                });
+            });
+            autoTypingBotResponse(res.bot, "lt", loadingMessage.id);
+            setIsLoading(false);
         });
     };
 
-    const updatePosts = (post, isBot, isLoading) => {
-        if (isBot) {
-            autoTypingBotResponse(post);
-        } else {
-            setPosts((prevState) => [
-                ...prevState,
-                {
-                    type: isLoading ? "loading" : "user",
-                    post,
-                },
-            ]);
-        }
+    const toggleTranslation = (messageId) => {
+        setPosts((prevState) => {
+            return prevState.map((message) => {
+                if (message.id === messageId && message.type === "bot") {
+                    message.post.currentLang =
+                        message.post.currentLang === "lt" ? "en" : "lt";
+                }
+                return message;
+            });
+        });
     };
 
     const onKeyUp = (e) => {
@@ -119,11 +142,11 @@ const Chatbot = () => {
 
                 {posts.map((post, index) => (
                     <motion.div
-                        key={index}
+                        key={post.id}
                         className={`flex ${post.type === "user" ? "justify-end" : "justify-start"} w-full`}
-                        initial={{ opacity: 0, y: 20 }} // Start hidden and below
-                        animate={{ opacity: 1, y: 0 }} // Transition to visible at its position
-                        transition={{ duration: 0.3, delay: index * 0.1 }} // Delay for sequential appearance
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3, delay: index * 0.1 }}
                     >
                         <div className={`flex items-end max-w-2xl ${post.type === "user" ? "ml-auto" : "mr-auto"}`}>
                             {post.type !== "user" && (
@@ -140,43 +163,18 @@ const Chatbot = () => {
                                         : "bg-gray-50 text-gray-800 rounded-bl-none"
                                 }`}
                             >
-                                {post.type === "loading" ? (
-                                    <div className="flex space-x-1">
-                                        {[0, 1, 2].map((dot) => (
-                                            <motion.div
-                                                key={dot}
-                                                className="w-2 h-2 bg-[#1B4A7E] rounded-full"
-                                                animate={{ y: [0, -5, 0] }}
-                                                transition={{
-                                                    duration: 0.6,
-                                                    repeat: Infinity,
-                                                    delay: dot * 0.2,
-                                                }}
-                                            ></motion.div>
-                                        ))}
-                                    </div>
+                                {post.isLoading ? (
+                                   <div className=" py-2 pl-5">
+                                    <TypingLoader />
+                                   </div>
                                 ) : (
                                     <p className="leading-relaxed">
-                                        {post.type === "user" ? post.post : <ChatgptTextRender text={post.post[post.post.currentLang]} />}
+                                        {post.type === "user" ? post.post[post.post.currentLang] : <ChatgptTextRender text={post.post[post.post.currentLang]} />}
                                     </p>
                                 )}
-                                {post.type === "bot" && ( // Only show translate button for bot responses
+                                {post.type === "bot" && (
                                     <button
-                                        onClick={() =>
-                                            setPosts((prevState) =>
-                                                prevState.map((p, i) =>
-                                                    i === index
-                                                        ? {
-                                                              ...p,
-                                                              post: {
-                                                                  ...p.post,
-                                                                  currentLang: p.post.currentLang === "lt" ? "en" : "lt",
-                                                              },
-                                                          }
-                                                        : p
-                                                )
-                                            )
-                                        }
+                                        onClick={() => toggleTranslation(post.id)}
                                         className="text-sm text-blue-500 underline mt-2 cursor-pointer"
                                     >
                                         {post.post.currentLang === "lt" ? "Translate to English" : "Tulkot latviski"}
@@ -191,6 +189,7 @@ const Chatbot = () => {
                         </div>
                     </motion.div>
                 ))}
+                
             </div>
 
             <div className="pb-5 pt-3  drop-shadow-2xl ">
@@ -204,7 +203,7 @@ const Chatbot = () => {
                     <motion.input
                         type="text"
                         value={input}
-                        onChange={(e) => setInput(e.target.value)} // Allow typing
+                        onChange={(e) => setInput(e.target.value)}
                         placeholder="Ask Something Else"
                         className="flex-1 px-4 py-4 h-full text-[#747474] text-[15px] rounded-full outline-none shadow-md bg-white"
                         initial={{ scale: 0.9 }}
@@ -218,7 +217,7 @@ const Chatbot = () => {
                             isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-[#1B4A7E]"
                         } text-white flex items-center justify-center`}
                         whileTap={!isLoading ? { scale: 0.9 } : {}}
-                        disabled={isLoading} // Prevent sending while loading
+                        disabled={isLoading}
                     >
                         <FiSend className="w-6 h-6" />
                     </motion.button>
