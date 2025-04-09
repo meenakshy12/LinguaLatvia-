@@ -14,12 +14,7 @@ const Chatbot = () => {
     const [posts, setPosts] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
 
-    useEffect(() => {
-        const layoutElement = document.querySelector(".layout");
-        if (layoutElement) {
-            layoutElement.scrollTop = layoutElement.scrollHeight;
-        }
-    }, [posts]);
+ 
 
     const fetchBotResponse = async () => {
         const { data } = await axios.post(
@@ -58,7 +53,7 @@ const Chatbot = () => {
     const onSubmit = () => {
         if (input.trim() === "" || isLoading) return;
         setIsLoading(true);
-
+      
         const userMessage = {
             id: Date.now(),
             type: "user",
@@ -76,7 +71,12 @@ const Chatbot = () => {
             isLoading: true,
         };
         setPosts((prevState) => [...prevState, loadingMessage]);
-
+      setTimeout(() => {
+        const layoutElement = document.querySelector(".layout");
+        if (layoutElement) {
+            layoutElement.scrollTop = layoutElement.scrollHeight;
+        }
+    }, 100);
         fetchBotResponse().then((res) => {
             setPosts((prevState) => {
                 return prevState.map((message) => {
@@ -94,6 +94,7 @@ const Chatbot = () => {
                     return message;
                 });
             });
+          
             autoTypingBotResponse(res.bot, "lt", loadingMessage.id);
             setIsLoading(false);
         });
@@ -109,6 +110,8 @@ const Chatbot = () => {
                 return message;
             });
         });
+
+    // No scrolling behavior is added here as per your request.
     };
 
     const onKeyUp = (e) => {
@@ -143,6 +146,7 @@ const Chatbot = () => {
                 {posts.map((post, index) => (
                     <motion.div
                         key={post.id}
+                        id={`message-${post.id}`}
                         className={`flex ${post.type === "user" ? "justify-end" : "justify-start"} w-full`}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
