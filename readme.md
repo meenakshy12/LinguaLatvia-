@@ -202,8 +202,6 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ---
 
----
-
 ### Explanation:
 - **Technologies Used**: Lists the main tech stack for both frontend and backend.
 - **Setup Instructions**: Provides detailed steps for setting up both the frontend and backend, including the creation of `.env` files for configuration.
