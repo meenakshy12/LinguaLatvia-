@@ -6,13 +6,13 @@
 
 ## 🌐 **Features**
 
-- 🔒 **Firebase Authentication** with email verification
-- 💬 **Chatbot** powered by **OpenAI** for natural, friendly conversations
-- 🌍 **Translation** of messages between English and Latvian using **DeepL API**
-- 🧑‍🏫 **Grammar correction** and sentence improvement suggestions
-- 🔥 **MERN Stack** architecture (MongoDB, Express.js, React.js, Node.js)
-- 🌗 **Language toggle** to switch between English and Latvian
-- 🛠️ **User-friendly** interface with chat options and language translation features
+- **Firebase Authentication** with email verification
+-  **Chatbot** powered by **OpenAI** for natural, friendly conversations
+-  **Translation** of messages between English and Latvian using **DeepL API**
+-  **Grammar correction** and sentence improvement suggestions
+-  **MERN Stack** architecture (MongoDB, Express.js, React.js, Node.js)
+-  **Language toggle** to switch between English and Latvian
+-  **User-friendly** interface with chat options and language translation features
 
 ---
 
