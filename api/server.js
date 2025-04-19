@@ -96,7 +96,137 @@ Your main goals are:
   }
 });
 
+app.get("/game01", async (req, res) => {
+  try {
+    const messages = [
+      {
+        role: "system",
+        content: "You are a helpful assistant that gives 10 simple Latvian words and their English meanings for children. Only this format: “Latvian” - English",
+      },
+      {
+        role: "user",
+        content: "Give me 10 simple Latvian words with their English meanings.",
+      },
+    ];
 
+    const options = {
+      method: "POST",
+      url: "https://api.openai.com/v1/chat/completions",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+      },
+      data: {
+        model: "gpt-4o-mini",
+        messages,
+        temperature: 0.7,
+        max_tokens: 256,
+      },
+    };
 
+    const response = await axios.request(options);
+    const content = response.data.choices[0].message.content;
+
+    // Extract tasks from the response
+    const tasks = content
+      .split("\n")
+      .map((line) => {
+        const match = line.match(/"(.+?)"\s*-\s*(.+)/);
+        return match ? { lt: match[1].trim(), en: match[2].trim() } : null;
+      })
+      .filter(Boolean);
+
+    res.status(200).send({ gameData: tasks });
+  } catch (error) {
+    console.error("Error in /game01:", error.response?.data || error);
+    res.status(500).send({ error: "Failed to generate game data." });
+  }
+});
+
+app.get("/game02", async (req, res) => {
+  try {
+    const messages = [
+      {
+        role: "system",
+        content: "You are an assistant that generates simple Latvian vocabulary questions for children learning Latvian. Each question includes a sentence with a missing word, an English translation, three options, and the correct answer.",
+      },
+      {
+        role: "user",
+        content: `Give me 10 vocabulary questions in the following format:
+
+[
+  {
+    sentence: "_ _ _ ir liela",
+    translation: "The house is big",
+    options: ["māja", "auto", "skola"],
+    correctAnswer: "māja"
+  },
+  ...
+]
+
+Only return an array of exactly 10 objects in this format.`,
+      },
+    ];
+
+    const options = {
+      method: "POST",
+      url: "https://api.openai.com/v1/chat/completions",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+      },
+      data: {
+        model: "gpt-4o-mini",
+        messages,
+        temperature: 0.7,
+        max_tokens: 512,
+      },
+    };
+
+    const response = await axios.request(options);
+    const content = response.data.choices[0].message.content;
+    res.status(200).send({ gameData: JSON.parse(content) });
+  } catch (error) {
+    console.error("Error in /game02:", error.response?.data || error);
+    res.status(500).send({ error: "Failed to generate game data." });
+  }
+});
+
+app.get("/game03", async (req, res) => {
+  try {
+    const messages = [
+      {
+        role: "system",
+        content: "You are a helpful assistant that translates simple English words or phrases into Latvian. Respond in JSON format, with exactly 4 items like this: [{question: 'Hello', answer: 'Sveiki'}, ...]",
+      },
+      {
+        role: "user",
+        content: "Give me 4 basic English to Latvian translations.",
+      },
+    ];
+
+    const options = {
+      method: "POST",
+      url: "https://api.openai.com/v1/chat/completions",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+      },
+      data: {
+        model: "gpt-4o-mini",
+        messages,
+        temperature: 0.7,
+        max_tokens: 128,
+      },
+    };
+
+    const response = await axios.request(options);
+    const content = response.data.choices[0].message.content;
+    res.status(200).send({ gameData: JSON.parse(content) });
+  } catch (error) {
+    console.error("Error in /game03:", error.response?.data || error);
+    res.status(500).send({ error: "Failed to generate game data." });
+  }
+});
 
 app.listen(4000, () => console.log("Server is running on port 4000"));

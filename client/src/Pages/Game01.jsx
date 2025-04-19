@@ -11,59 +11,70 @@ const Game01 = () => {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = React.useState(true);
     const [tasks, setTasks] = React.useState([]);
-    const input = `“zupa” - Soup
-    “debesis” - Sky
-    “maize” - Bread
-    “kūka” - Cake
-    “sniegs” - Snow
-    “piens” - Milk
-    “kalns” - Mountain
-    “koks” - Tree
-    “apelsīns” - Orange
-    “saule” - Sun`;
 
-    useEffect(() => {
-        setIsLoading(true);
+const getApiData = async () => {
+
         try {
-            const extractedTasks = ExtractTasks;
-            const defaultTasks = [
-                { lt: "māja", en: "House" },
-                { lt: "auto", en: "Car" },
-                { lt: "suns", en: "Dog" },
-                { lt: "kaķis", en: "Cat" },
-                { lt: "ūdens", en: "Water" },
-                { lt: "ēdiens", en: "Food" },
-                { lt: "draugs", en: "Friend" },
-                { lt: "skola", en: "School" },
-                { lt: "zieds", en: "Flower" },
-                { lt: "koks", en: "Tree" },
-            ];
-            const combinedTasks = [...extractedTasks, ...defaultTasks].slice(0, 10); // Ensure exactly 10 tasks
-            setTasks(combinedTasks);
-        } catch (error) {
-            console.error("Error extracting tasks:", error);
-            setTasks([
-                { lt: "māja", en: "House" },
-                { lt: "auto", en: "Car" },
-                { lt: "suns", en: "Dog" },
-                { lt: "kaķis", en: "Cat" },
-                { lt: "ūdens", en: "Water" },
-                { lt: "ēdiens", en: "Food" },
-                { lt: "draugs", en: "Friend" },
-                { lt: "skola", en: "School" },
-                { lt: "zieds", en: "Flower" },
-                { lt: "koks", en: "Tree" },
-            ]); // Fallback to predefined tasks
+            const response = await fetch("http://localhost:4000/game01", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            const data = await response.json();
+            return data.gameData;
         }
-        setTimeout(() => {
-            setIsLoading(false);
-        }, 2000); // Simulate loading time
-    }, []);
+        catch (error) {
+            console.error("Error fetching game data:", error);
+            return null;
+        }
+    };
+    useEffect(() => {
+        console.log("Fetching tasks...");
+        setIsLoading(true);
 
-    const ExtractTasks = input.split('\n').map(line => {
-        const match = line.match(/“(.+?)”\s*-\s*(.+)/);
-        return match ? { lt: match[1], en: match[2] } : null;
-    }).filter(Boolean);
+        const fetchAndProcessTasks = async () => {
+            try {
+                const extractedTasks = await getApiData();
+                console.log("Extracted tasks:", extractedTasks);
+                const defaultTasks = [
+                    { lt: "māja", en: "House" },
+                    { lt: "auto", en: "Car" },
+                    { lt: "suns", en: "Dog" },
+                    { lt: "kaķis", en: "Cat" },
+                    { lt: "ūdens", en: "Water" },
+                    { lt: "ēdiens", en: "Food" },
+                    { lt: "draugs", en: "Friend" },
+                    { lt: "skola", en: "School" },
+                    { lt: "zieds", en: "Flower" },
+                    { lt: "koks", en: "Tree" },
+                ];
+
+                const combinedTasks = [...extractedTasks, ...defaultTasks].slice(0, 10); // Ensure exactly 10 tasks
+                setTasks(combinedTasks);
+            } catch (error) {
+                console.error("Error processing tasks:", error);
+                setTasks([
+                    { lt: "māja", en: "House" },
+                    { lt: "auto", en: "Car" },
+                    { lt: "suns", en: "Dog" },
+                    { lt: "kaķis", en: "Cat" },
+                    { lt: "ūdens", en: "Water" },
+                    { lt: "ēdiens", en: "Food" },
+                    { lt: "draugs", en: "Friend" },
+                    { lt: "skola", en: "School" },
+                    { lt: "zieds", en: "Flower" },
+                    { lt: "koks", en: "Tree" },
+                ]); // Fallback to predefined tasks
+            } finally {
+                setTimeout(() => {
+                    setIsLoading(false);
+                }, 2000); // Simulate loading time
+            }
+        };
+
+        fetchAndProcessTasks();
+    }, []);
 
     const getAnimationDirection = (isNext) => {
         return isNext
