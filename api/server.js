@@ -152,8 +152,7 @@ app.get("/game02", async (req, res) => {
       },
       {
         role: "user",
-        content: `Give me 10 vocabulary questions in the json format:
-
+        content: `Give me 10 vocabulary questions,like this in the json format:
 [
   {
     sentence: "_ _ _ ir liela",

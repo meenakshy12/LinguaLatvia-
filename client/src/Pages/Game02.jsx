@@ -3,6 +3,7 @@ import { IoIosArrowForward, IoIosArrowBack } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 import ProgressBricks from '../components/ProgressBricks';
 import { motion } from 'framer-motion';
+import Loader from '../components/Loader';
 
 
 
@@ -138,7 +139,7 @@ const Game02 = () => {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loader/>;
   }
 
   if (error) {
