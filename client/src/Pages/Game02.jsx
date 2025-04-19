@@ -90,12 +90,12 @@ const Game02 = () => {
             "Content-Type": "application/json",
           },
         });
-        console.log("Response:", response); // Log the response for debugging
+        // console.log("Response:", response); // Log the response for debugging
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const { content } = await response.json(); // Access the content property
-        console.log("Fetched Questions (raw):", content); // Log raw fetched questions for debugging
+        // console.log("Fetched Questions (raw):", content); // Log raw fetched questions for debugging
 
         let parsedQuestions;
         try {
@@ -191,6 +191,7 @@ const Game02 = () => {
           <IoIosArrowBack className="text-white text-2xl font-extrabold" />
         </button>
       </div>
+      <ProgressBricks current={currentQuestionIndex + 1} heading="Fill in the blanks" subheading="(select right answer from the boxes)" />
       <motion.div
         key={currentQuestionIndex}
         initial={{ opacity: 0, x: 50 }}
@@ -200,7 +201,6 @@ const Game02 = () => {
         className="relative w-full max-w-md mx-2"
       >
         <div className="absolute w-full text-center">
-          <ProgressBricks current={currentQuestionIndex + 1} heading="Fill in the blanks" subheading="(select right answer from the boxes)" />
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -241,7 +241,7 @@ const Game02 = () => {
           )}
         </div>
       </motion.div>
-      <div className="w-full max-w-md mt-90 flex items-end justify-end mr-10">
+      <div className="w-full max-w-md mt-72 flex items-end justify-end mr-10">
        <button onClick={nextQuestion} className='size-9 cursor-pointer bg-black rounded-full flex justify-center items-center'>
                            <motion.div
                                whileHover={{ x: 5 }} // Add horizontal animation on hover
