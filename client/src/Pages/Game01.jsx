@@ -11,20 +11,50 @@ const Game01 = () => {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = React.useState(true);
     const [tasks, setTasks] = React.useState([]);
-    const input = `“māja” - House
-“auto” - Car
-“suns” - Dog
-“kaķis” - Cat
-“ūdens” - Water
-“ēdiens” - Food
-“draugs” - Friend
-“skola” - School
-“zieds” - Flower
-“koks” - Tree`;
+    const input = `“zupa” - Soup
+    “debesis” - Sky
+    “maize” - Bread
+    “kūka” - Cake
+    “sniegs” - Snow
+    “piens” - Milk
+    “kalns” - Mountain
+    “koks” - Tree
+    “apelsīns” - Orange
+    “saule” - Sun`;
 
     useEffect(() => {
         setIsLoading(true);
-        setTasks(ExtractTasks);
+        try {
+            const extractedTasks = ExtractTasks;
+            const defaultTasks = [
+                { lt: "māja", en: "House" },
+                { lt: "auto", en: "Car" },
+                { lt: "suns", en: "Dog" },
+                { lt: "kaķis", en: "Cat" },
+                { lt: "ūdens", en: "Water" },
+                { lt: "ēdiens", en: "Food" },
+                { lt: "draugs", en: "Friend" },
+                { lt: "skola", en: "School" },
+                { lt: "zieds", en: "Flower" },
+                { lt: "koks", en: "Tree" },
+            ];
+            const combinedTasks = [...extractedTasks, ...defaultTasks].slice(0, 10); // Ensure exactly 10 tasks
+            setTasks(combinedTasks);
+        } catch (error) {
+            console.error("Error extracting tasks:", error);
+            setTasks([
+                { lt: "māja", en: "House" },
+                { lt: "auto", en: "Car" },
+                { lt: "suns", en: "Dog" },
+                { lt: "kaķis", en: "Cat" },
+                { lt: "ūdens", en: "Water" },
+                { lt: "ēdiens", en: "Food" },
+                { lt: "draugs", en: "Friend" },
+                { lt: "skola", en: "School" },
+                { lt: "zieds", en: "Flower" },
+                { lt: "koks", en: "Tree" },
+            ]); // Fallback to predefined tasks
+        }
         setTimeout(() => {
             setIsLoading(false);
         }, 2000); // Simulate loading time
