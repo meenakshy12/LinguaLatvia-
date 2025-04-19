@@ -83,7 +83,7 @@ const Game01 = () => {
                     </motion.div>
                 </AnimatePresence>
             </div>
-            <div className='w-full max-w-md mt-60 flex items-end justify-end mr-5  '>
+            <div className='w-full max-w-md mt-72 flex items-end justify-end mr-5  '>
                 <button onClick={nextTask} className='size-9 cursor-pointer bg-black rounded-full flex justify-center items-center'>
                     <IoIosArrowForward className='text-white text-3xl font-extrabold' />
                 </button>

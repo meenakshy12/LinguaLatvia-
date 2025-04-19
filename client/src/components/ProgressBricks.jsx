@@ -1,10 +1,11 @@
 import React from "react";
 
-const ProgressBricks = ({heading="Learn your first 10 words", total = 10, current = 5 }) => {
+const ProgressBricks = ({subheading,heading="Learn your first 10 words", total = 10, current = 5 }) => {
   return (
-    <div className="flex flex-col items-center gap-2">
-      <h2 className="sm:text-3xl text-2xl font-semibold mb-1">{heading}</h2>
-      <div className="flex gap-2 w-full justify-center items-center">
+    <div className="flex flex-col gap-2">
+      <h2 className="sm:text-3xl text-2xl font-semibold ">{heading}</h2>
+      {subheading && <p className="text-sm text-[#00000099] ">{subheading}</p>}
+      <div className="flex gap-2 w-full justify-center items-center mt-1">
         {[...Array(total)].map((_, index) => (
           <div
             key={index}
@@ -21,3 +22,4 @@ const ProgressBricks = ({heading="Learn your first 10 words", total = 10, curren
 };
 
 export default ProgressBricks;
+
