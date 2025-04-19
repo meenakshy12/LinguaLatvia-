@@ -97,7 +97,7 @@ Run the following command to start the backend server:
 nodemon server.js
 ```
 
-The backend server will run on `http://localhost:5000`.
+The backend server will run on `http://localhost:4000`.
 
 ---
 
