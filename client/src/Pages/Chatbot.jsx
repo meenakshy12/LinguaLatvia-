@@ -75,27 +75,44 @@ const Chatbot = () => {
         layoutElement.scrollTop = layoutElement.scrollHeight;
       }
     }, 100);
-    fetchBotResponse().then((res) => {
-      setPosts((prevState) => {
-        return prevState.map((message) => {
-          if (message.id === loadingMessage.id) {
-            setTimeout(() => {
-              message.isLoading = false;
-            }, 500);
+    fetchBotResponse()
+      .then((res) => {
+        setPosts((prevState) => {
+          return prevState.map((message) => {
+            if (message.id === loadingMessage.id) {
+              setTimeout(() => {
+                message.isLoading = false;
+              }, 500);
 
-            message.post = {
-              lt: res.bot.lt.trim(),
-              en: res.bot.en.trim(),
-              currentLang: "lt",
-            };
-          }
-          return message;
+              message.post = {
+                lt: res.bot.lt.trim(),
+                en: res.bot.en.trim(),
+                currentLang: "lt",
+              };
+            }
+            return message;
+          });
         });
-      });
 
-      autoTypingBotResponse(res.bot, "lt", loadingMessage.id);
-      setIsLoading(false);
-    });
+        autoTypingBotResponse(res.bot, "lt", loadingMessage.id);
+        setIsLoading(false);
+      })
+      .catch(() => {
+        setPosts((prevState) => {
+          return prevState.map((message) => {
+            if (message.id === loadingMessage.id) {
+              message.isLoading = false;
+              message.post = {
+                lt: "Kļūda ģenerēšanā. Lūdzu, atsvaidziniet un mēģiniet vēlreiz.",
+                en: "Error in generate. Please refresh and try again.",
+                currentLang: "lt",
+              };
+            }
+            return message;
+          });
+        });
+        setIsLoading(false);
+      });
   };
 
   const toggleTranslation = (messageId) => {

@@ -2,7 +2,7 @@ import React from 'react'
 
 const TypingLoader = () => {
   return (
-    <div class="dot-typing"></div>
+    <div className="dot-typing"></div>
   )
 }
 
