@@ -10,19 +10,45 @@ const Game03 = () => {
   const [data, setData] = useState([]);
   const [validated, setValidated] = useState(false); // Track if validation is triggered
   const navigate = useNavigate();
+  const defaultTasks = [
+    { question: "māja", answer: "House" },
+    { question: "auto", answer: "Car" },
+    { question: "suns", answer: "Dog" },
+    { question: "kaķis", answer: "Cat" }
+  ];
 
   useEffect(() => {
-    const initialData = [
-      { question: "Hello", answer: "Sveiki" },
-      { question: "Thank you", answer: "Paldies" },
-      { question: "car 12 sada", answer: "auto 1" },
-      { question: "house", answer: "māja" },
-    ];
+    try {
+      const initialData = JSON.parse(`[
+        { "question": "Hello", "answer": "Sveiki" },
+        { "question": "Thank you", "answer": "Paldies" },
+        { "question": "Goodbye", "answer": "Uz redzēšanos" },
+        { "question": "Please", "answer": "Lūdzu" }
+      ]`);
 
-    setData(initialData);
-    setQuestions(initialData.map((item) => item.question));
-    setOptions(shuffleArray(initialData.map((item) => item.answer)));
-    setAnswers(initialData.reduce((acc, item) => ({ ...acc, [item.question.toLowerCase()]: "" }), {}));
+      const combinedData = [...initialData, ...defaultTasks].slice(0, 4); // Ensure only 4 objects are used
+
+      setData(combinedData);
+      setQuestions(combinedData.map((item) => item.question));
+      setOptions(shuffleArray(combinedData.map((item) => item.answer)));
+      setAnswers(
+        combinedData.reduce((acc, item) => {
+          const questionKey = item.question?.toLowerCase() || ""; // Safely handle undefined
+          return { ...acc, [questionKey]: "" };
+        }, {})
+      );
+    } catch (error) {
+      console.error("Error parsing initial data, using default tasks:", error);
+      setData(defaultTasks);
+      setQuestions(defaultTasks.map((item) => item.question));
+      setOptions(shuffleArray(defaultTasks.map((item) => item.answer)));
+      setAnswers(
+        defaultTasks.reduce((acc, item) => {
+          const questionKey = item.question?.toLowerCase() || ""; // Safely handle undefined
+          return { ...acc, [questionKey]: "" };
+        }, {})
+      );
+    }
   }, []);
 
   const shuffleArray = (array) => {
@@ -49,10 +75,13 @@ const Game03 = () => {
   };
 
   const getBorderColor = (question) => {
-    const correctAnswer = data.find((item) => item.question.toLowerCase() === question)?.answer;
+    const foundItem = data.find((item) => item.question?.toLowerCase() === question);
+    if (!foundItem) return "border-[#1A1A86]"; // Default border if no matching item is found
+
+    const correctAnswer = foundItem.answer;
     const userAnswer = answers[question];
-    if (!validated) return "border-[#1A1A86]"; // Default border if not validated
-    if (!userAnswer) return "border-red-500"; // Mark as incorrect if no answer is provided
+    if (!validated || !userAnswer) return "border-[#1A1A86]"; // Default border if not validated
+    // if () return "border-red-500"; // Mark as incorrect if no answer is provided
     return userAnswer === correctAnswer ? "border-green-500" : "border-red-500";
   };
 
@@ -60,7 +89,9 @@ const Game03 = () => {
     const allAnswered = Object.values(answers).every((answer) => answer !== "");
     const allCorrect = questions.every((q) => {
       const questionKey = q.toLowerCase();
-      const correctAnswer = data.find((item) => item.question.toLowerCase() === questionKey)?.answer;
+      const foundItem = data.find((item) => item.question?.toLowerCase() === questionKey);
+      if (!foundItem) return false; // If no matching item, consider it incorrect
+      const correctAnswer = foundItem.answer;
       return answers[questionKey] === correctAnswer;
     });
 
@@ -147,14 +178,14 @@ const Game03 = () => {
           ))}
       </div>
       <div className="w-full max-w-md mt-20 flex items-end justify-end mr-15">
-        <motion.button
-          onClick={GoToGreeting}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          className="size-9 cursor-pointer bg-black rounded-full flex justify-center items-center"
-        >
-          <IoIosArrowForward className="text-white text-3xl font-extrabold" />
-        </motion.button>
+       <button onClick={GoToGreeting} className='size-9 cursor-pointer bg-black rounded-full flex justify-center items-center'>
+                           <motion.div
+                               whileHover={{ x: 5 }} // Add horizontal animation on hover
+                               transition={{ type: "spring", stiffness: 300 }}
+                           >
+                               <IoIosArrowForward className='text-white text-3xl font-extrabold' />
+                           </motion.div>
+                       </button>
       </div>
     </motion.div>
   );

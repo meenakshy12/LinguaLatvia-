@@ -113,9 +113,14 @@ const Game01 = () => {
                     </motion.div>
                 </AnimatePresence>
             </div>
-            <div className='w-full max-w-md mt-72 flex items-end justify-end mr-5  '>
+            <div className='w-full max-w-md mt-72 flex items-end justify-end mr-5'>
                 <button onClick={nextTask} className='size-9 cursor-pointer bg-black rounded-full flex justify-center items-center'>
-                    <IoIosArrowForward className='text-white text-3xl font-extrabold' />
+                    <motion.div
+                        whileHover={{ x: 5 }} // Add horizontal animation on hover
+                        transition={{ type: "spring", stiffness: 300 }}
+                    >
+                        <IoIosArrowForward className='text-white text-3xl font-extrabold' />
+                    </motion.div>
                 </button>
             </div>
         </div>

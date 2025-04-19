@@ -290,14 +290,14 @@ const Game02 = () => {
         </div>
       </motion.div>
       <div className="w-full max-w-md mt-90 flex items-end justify-end mr-10">
-        <motion.button
-          onClick={nextQuestion}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          className="size-9 cursor-pointer bg-black rounded-full flex justify-center items-center"
-        >
-          <IoIosArrowForward className="text-white text-3xl font-extrabold" />
-        </motion.button>
+       <button onClick={nextQuestion} className='size-9 cursor-pointer bg-black rounded-full flex justify-center items-center'>
+                           <motion.div
+                               whileHover={{ x: 5 }} // Add horizontal animation on hover
+                               transition={{ type: "spring", stiffness: 300 }}
+                           >
+                               <IoIosArrowForward className='text-white text-3xl font-extrabold' />
+                           </motion.div>
+                       </button>
       </div>
     </div>
   );
