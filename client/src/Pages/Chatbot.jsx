@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 
-import user from "../assets/user2.png";
+import user from "../assets/woman.svg";
 import bot from "../assets/assistant.png";
 import { FiSend } from "react-icons/fi";
-import Navbar from "../components/Navbar";
+// import Navbar from "../components/Navbar";
 import ChatgptTextRender from "../components/ChatgptTextRender";
 import TypingLoader from "../components/TypingLoader";
 
@@ -216,7 +216,7 @@ const Chatbot = () => {
                 )}
               </div>
               {post.type === "user" && (
-                <div className="w-12 h-12 rounded-full bg-white p-1 ml-3 flex-shrink-0">
+                <div className="w-12 h-12 rounded-full  p-1 ml-3 flex-shrink-0">
                   <img src={user} alt="User" className="rounded-full" />
                 </div>
               )}
