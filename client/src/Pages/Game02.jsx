@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { IoIosArrowForward, IoIosArrowBack } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 import ProgressBricks from '../components/ProgressBricks';
+import { motion } from 'framer-motion';
 
 const Game02 = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -57,39 +58,65 @@ const Game02 = () => {
           <IoIosArrowBack className="text-white text-2xl font-extrabold" />
         </button>
       </div>
-      <div className="relative w-full max-w-md mx-2">
+      <motion.div
+        key={currentQuestionIndex}
+        initial={{ opacity: 0, x: 50 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: -50 }}
+        transition={{ duration: 0.5 }}
+        className="relative w-full max-w-md mx-2"
+      >
         <div className="absolute w-full text-center">
-        <ProgressBricks current={currentQuestionIndex+1} heading='Fill in the blanks' subheading={" (select right answer  from the boxes)"}/>
-          <div className="text-2xl font-semibold mb-2 mt-10">{currentQuestion.sentence}</div>
+          <ProgressBricks current={currentQuestionIndex + 1} heading="Fill in the blanks" subheading="(select right answer from the boxes)" />
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="text-2xl font-semibold mb-2 mt-10"
+          >
+            {currentQuestion.sentence}
+          </motion.div>
           <p className="font-semibold mb-4">{`(${currentQuestion.translation})`}</p>
           <div className="flex mt-15 justify-center gap-4 mb-2">
             {currentQuestion.options.map((option, index) => (
-              <button
+              <motion.button
                 key={index}
                 onClick={() => handleOptionClick(option)}
-                className={`px-4 py-2 text-lg border rounded-lg cursor-pointer  border-black  ${
-                    selectedOption === option
-                      ? isCorrect
-                        ? 'text-green-400 font-semibold border-green-400'
-                        : ' font-semibold text-red-400 border-red-400'
-                      : ' text-normal text-black border-black'
-                  }`}
-                >
-                  {option}
-                </button>
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                className={`px-4 py-2 text-lg border rounded-lg cursor-pointer border-black ${
+                  selectedOption === option
+                    ? isCorrect
+                      ? 'text-green-400 font-semibold border-green-400'
+                      : 'font-semibold text-red-400 border-red-400'
+                    : 'text-normal text-black border-black'
+                }`}
+              >
+                {option}
+              </motion.button>
             ))}
           </div>
           {selectedOption && (
-            <div className={`mt-2 text-lg ${isCorrect ? 'text-green-500' : 'text-red-500'}`}>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+              className={`mt-2 text-lg ${isCorrect ? 'text-green-500' : 'text-red-500'}`}
+            >
               {isCorrect ? 'Correct!' : 'Wrong, try again.'}
-            </div>
+            </motion.div>
           )}
         </div>
-      </div>
+      </motion.div>
       <div className="w-full max-w-md mt-90 flex items-end justify-end mr-10">
-        <button onClick={nextQuestion} className="size-9 cursor-pointer bg-black rounded-full flex justify-center items-center">
+        <motion.button
+          onClick={nextQuestion}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          className="size-9 cursor-pointer bg-black rounded-full flex justify-center items-center"
+        >
           <IoIosArrowForward className="text-white text-3xl font-extrabold" />
-        </button>
+        </motion.button>
       </div>
     </div>
   );
