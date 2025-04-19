@@ -4,24 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import ProgressBricks from '../components/ProgressBricks';
 import { motion } from 'framer-motion';
 
-function parseQuestions(text) {
-  try {
-    // Remove unwanted code block marks (e.g., from markdown)
-    const cleaned = text.replace(/```json|```/g, '').trim();
 
-    const data = JSON.parse(cleaned);
-
-    // Optional validation
-    if (Array.isArray(data)) {
-      return data;
-    } else {
-      throw new Error("Invalid or incomplete data");
-    }
-  } catch (e) {
-    console.error("Failed to parse response:", e.message);
-    throw e; // Re-throw the error to handle it in the calling function
-  }
-}
 
 function generateDefaultQuestions() {
   return [
@@ -88,71 +71,6 @@ function generateDefaultQuestions() {
   ];
 }
   
-const responseText = `
-[
-  {
-    "sentence": "_ _ _ ir liela",
-    "translation": "The house is big",
-    "options": ["māja", "auto", "skola"],
-    "correctAnswer": "māja"
-  },
-  {
-    "sentence": "_ _ _ ir ātra",
-    "translation": "The car is fast",
-    "options": ["māja", "auto", "skola"],
-    "correctAnswer": "auto"
-  },
-  {
-    "sentence": "_ _ _ ir veca",
-    "translation": "The school is old",
-    "options": ["māja", "auto", "skola"],
-    "correctAnswer": "skola"
-  },
-  {
-    "sentence": "_ _ _ ir jauns",
-    "translation": "The boy is young",
-    "options": ["zēns", "meitene", "suns"],
-    "correctAnswer": "zēns"
-  },
-  {
-    "sentence": "_ _ _ ir skaista",
-    "translation": "The girl is beautiful",
-    "options": ["zēns", "meitene", "suns"],
-    "correctAnswer": "meitene"
-  },
-  {
-    "sentence": "_ _ _ ir liels",
-    "translation": "The dog is big",
-    "options": ["zēns", "meitene", "suns"],
-    "correctAnswer": "suns"
-  },
-  {
-    "sentence": "_ _ _ ir garš",
-    "translation": "The tree is tall",
-    "options": ["koks", "zieds", "akmens"],
-    "correctAnswer": "koks"
-  },
-  {
-    "sentence": "_ _ _ ir mazs",
-    "translation": "The flower is small",
-    "options": ["koks", "zieds", "akmens"],
-    "correctAnswer": "zieds"
-  },
-  {
-    "sentence": "_ _ _ ir smags",
-    "translation": "The stone is heavy",
-    "options": ["koks", "zieds", "akmens"],
-    "correctAnswer": "akmens"
-  },
-  {
-    "sentence": "_ _ _ ir garšīgs",
-    "translation": "The apple is tasty",
-    "options": ["ābols", "bumbieris", "ķirsis"],
-    "correctAnswer": "ābols"
-  }
-]
-`;
-
 const Game02 = () => {
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -163,27 +81,60 @@ const Game02 = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    try {
-      const parsedQuestions = parseQuestions(responseText);
+    const fetchQuestions = async () => {
+      try {
+        const response = await fetch("http://localhost:4000/game02", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        console.log("Response:", response); // Log the response for debugging
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const { content } = await response.json(); // Access the content property
+        console.log("Fetched Questions (raw):", content); // Log raw fetched questions for debugging
+
+        let parsedQuestions;
+        try {
+          // Sanitize and parse the content string
+          const sanitizedContent = content
+            .replace(/```json|```/g, '') // Remove markdown-like code block markers
+            .replace(/[\r\n]/g, '') // Remove line breaks
+            .replace(/,\s*}/g, '}') // Remove trailing commas before closing braces
+            .replace(/,\s*]/g, ']') // Remove trailing commas before closing brackets
+            .trim();
+          console.log("Sanitized Content:", sanitizedContent); // Log sanitized content for debugging
+          parsedQuestions = JSON.parse(sanitizedContent);
+        } catch (parseError) {
+          console.error("Error parsing questions JSON:", parseError.message);
+          throw new Error("Invalid JSON format received from the server.");
+        }
+
         console.log("Parsed Questions:", parsedQuestions); // Log parsed questions for debugging
-      // Ensure we have exactly 10 questions
-      if (parsedQuestions.length < 10) {
-        const defaultQuestions = generateDefaultQuestions();
-        const remainingQuestions = defaultQuestions.slice(parsedQuestions.length, 10);
-        // Combine parsed questions with default questions to ensure 10 total
-            console.log("Default Questions:", defaultQuestions); // Log default questions for debugging
-            console.log("Remaining Questions:", remainingQuestions); // Log remaining questions for debugging
-        setQuestions([...parsedQuestions, ...remainingQuestions]);
-      } else {
-        setQuestions(parsedQuestions);
+
+        // Validate and ensure we have exactly 10 questions
+        if (!Array.isArray(parsedQuestions) || parsedQuestions.length < 10) {
+          console.warn("Incomplete or invalid questions received. Using default questions.");
+          const defaultQuestions = generateDefaultQuestions();
+          const remainingQuestions = defaultQuestions.slice(parsedQuestions.length || 0, 10);
+          console.log("Default Questions:", defaultQuestions); // Log default questions for debugging
+          console.log("Remaining Questions:", remainingQuestions); // Log remaining questions for debugging
+          setQuestions([...(parsedQuestions || []), ...remainingQuestions]);
+        } else {
+          setQuestions(parsedQuestions);
+        }
+      } catch (err) {
+        console.error("Error fetching questions:", err.message);
+        setError("Failed to load questions. Using default questions.");
+        setQuestions(generateDefaultQuestions()); // Use default questions on error
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      console.error("Error parsing questions:", err.message);
-      setError("Failed to load questions. Using default questions.");
-      setQuestions(generateDefaultQuestions()); // Use default questions on error
-    } finally {
-      setLoading(false);
-    }
+    };
+
+    fetchQuestions();
   }, []);
 
   if (loading) {

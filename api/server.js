@@ -152,7 +152,7 @@ app.get("/game02", async (req, res) => {
       },
       {
         role: "user",
-        content: `Give me 10 vocabulary questions in the following format:
+        content: `Give me 10 vocabulary questions in the json format:
 
 [
   {
@@ -179,15 +179,18 @@ Only return an array of exactly 10 objects in this format.`,
         model: "gpt-4o-mini",
         messages,
         temperature: 0.7,
-        max_tokens: 512,
+        max_tokens: 1024,
       },
     };
 
     const response = await axios.request(options);
     const content = response.data.choices[0].message.content;
-    res.status(200).send({ gameData: JSON.parse(content) });
+
+    
+
+    res.status(200).send({ content });
   } catch (error) {
-    console.error("Error in /game02:", error.response?.data || error);
+    console.error("Error in /game02:", error.response?.data || error.message || error);
     res.status(500).send({ error: "Failed to generate game data." });
   }
 });
