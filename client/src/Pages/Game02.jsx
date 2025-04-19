@@ -1,29 +1,189 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { IoIosArrowForward, IoIosArrowBack } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 import ProgressBricks from '../components/ProgressBricks';
 import { motion } from 'framer-motion';
 
+function parseQuestions(text) {
+  try {
+    // Remove unwanted code block marks (e.g., from markdown)
+    const cleaned = text.replace(/```json|```/g, '').trim();
+
+    const data = JSON.parse(cleaned);
+
+    // Optional validation
+    if (Array.isArray(data) && data.length === 10) {
+      return data;
+    } else {
+      throw new Error("Invalid or incomplete data");
+    }
+  } catch (e) {
+    console.error("Failed to parse response:", e.message);
+    throw e; // Re-throw the error to handle it in the calling function
+  }
+}
+
+function generateDefaultQuestions() {
+  return [
+    {
+      sentence: "_ _ _ ir silta",
+      translation: "The soup is warm",
+      options: ["zupa", "ūdens", "maize"],
+      correctAnswer: "zupa"
+    },
+    {
+      sentence: "_ _ _ ir zila",
+      translation: "The sky is blue",
+      options: ["debesis", "zivs", "upe"],
+      correctAnswer: "debesis"
+    },
+    {
+      sentence: "_ _ _ ir garšīgs",
+      translation: "The bread is tasty",
+      options: ["piens", "maize", "siers"],
+      correctAnswer: "maize"
+    },
+    {
+      sentence: "_ _ _ ir salda",
+      translation: "The cake is sweet",
+      options: ["kūka", "zivs", "bumbieris"],
+      correctAnswer: "kūka"
+    },
+    {
+      sentence: "_ _ _ ir balts",
+      translation: "The snow is white",
+      options: ["lietus", "sniegs", "mākonis"],
+      correctAnswer: "sniegs"
+    },
+    {
+      sentence: "_ _ _ ir auksts",
+      translation: "The milk is cold",
+      options: ["piens", "tēja", "kafija"],
+      correctAnswer: "piens"
+    },
+    {
+      sentence: "_ _ _ ir liels",
+      translation: "The mountain is big",
+      options: ["kalns", "akmens", "upē"],
+      correctAnswer: "kalns"
+    },
+    {
+      sentence: "_ _ _ ir zaļš",
+      translation: "The tree is green",
+      options: ["koks", "zieds", "debesis"],
+      correctAnswer: "koks"
+    },
+    {
+      sentence: "_ _ _ ir oranžs",
+      translation: "The orange is orange",
+      options: ["banāns", "apelsīns", "ābols"],
+      correctAnswer: "apelsīns"
+    },
+    {
+      sentence: "_ _ _ ir dzeltens",
+      translation: "The sun is yellow",
+      options: ["saule", "mēness", "zvaigzne"],
+      correctAnswer: "saule"
+    }
+  ];
+}
+  
+const responseText = `
+[
+  {
+    "sentence": "_ _ _ ir liela",
+    "translation": "The house is big",
+    "options": ["māja", "auto", "skola"],
+    "correctAnswer": "māja"
+  },
+  {
+    "sentence": "_ _ _ ir ātra",
+    "translation": "The car is fast",
+    "options": ["māja", "auto", "skola"],
+    "correctAnswer": "auto"
+  },
+  {
+    "sentence": "_ _ _ ir veca",
+    "translation": "The school is old",
+    "options": ["māja", "auto", "skola"],
+    "correctAnswer": "skola"
+  },
+  {
+    "sentence": "_ _ _ ir jauns",
+    "translation": "The boy is young",
+    "options": ["zēns", "meitene", "suns"],
+    "correctAnswer": "zēns"
+  },
+  {
+    "sentence": "_ _ _ ir skaista",
+    "translation": "The girl is beautiful",
+    "options": ["zēns", "meitene", "suns"],
+    "correctAnswer": "meitene"
+  },
+  {
+    "sentence": "_ _ _ ir liels",
+    "translation": "The dog is big",
+    "options": ["zēns", "meitene", "suns"],
+    "correctAnswer": "suns"
+  },
+  {
+    "sentence": "_ _ _ ir garš",
+    "translation": "The tree is tall",
+    "options": ["koks", "zieds", "akmens"],
+    "correctAnswer": "koks"
+  },
+  {
+    "sentence": "_ _ _ ir mazs",
+    "translation": "The flower is small",
+    "options": ["koks", "zieds", "akmens"],
+    "correctAnswer": "zieds"
+  },
+  {
+    "sentence": "_ _ _ ir smags",
+    "translation": "The stone is heavy",
+    "options": ["koks", "zieds", "akmens"],
+    "correctAnswer": "akmens"
+  },
+  {
+    "sentence": "_ _ _ ir garšīgs",
+    "translation": "The apple is tasty",
+    "options": ["ābols", "bumbieris", "ķirsis"],
+    "correctAnswer": "ābols"
+  }
+]
+`;
+
 const Game02 = () => {
+  const [questions, setQuestions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null); // State to track errors
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
   const navigate = useNavigate();
 
-  const questions = [
-    { sentence: "_ _ _ ir liela", translation: "The house is big", options: ["māja", "auto", "skola"], correctAnswer: "māja" },
-    { sentence: "_ _ _ ir ātra", translation: "The car is fast", options: ["māja", "auto", "skola"], correctAnswer: "auto" },
-    { sentence: "_ _ _ ir veca", translation: "The school is old", options: ["māja", "auto", "skola"], correctAnswer: "skola" },
-    { sentence: "_ _ _ ir jauns", translation: "The boy is young", options: ["zēns", "meitene", "suns"], correctAnswer: "zēns" },
-    { sentence: "_ _ _ ir skaista", translation: "The girl is beautiful", options: ["zēns", "meitene", "suns"], correctAnswer: "meitene" },
-    { sentence: "_ _ _ ir liels", translation: "The dog is big", options: ["zēns", "meitene", "suns"], correctAnswer: "suns" },
-    { sentence: "_ _ _ ir garš", translation: "The tree is tall", options: ["koks", "zieds", "akmens"], correctAnswer: "koks" },
-    { sentence: "_ _ _ ir mazs", translation: "The flower is small", options: ["koks", "zieds", "akmens"], correctAnswer: "zieds" },
-    { sentence: "_ _ _ ir smags", translation: "The stone is heavy", options: ["koks", "zieds", "akmens"], correctAnswer: "akmens" },
-    { sentence: "_ _ _ ir garšīgs", translation: "The apple is tasty", options: ["ābols", "bumbieris", "ķirsis"], correctAnswer: "ābols" },
-  ];
+  useEffect(() => {
+    try {
+      const parsedQuestions = parseQuestions(responseText);
+      setQuestions(parsedQuestions);
+    } catch (err) {
+      console.error("Error parsing questions:", err.message);
+      setError("Failed to load questions. Using default questions.");
+      setQuestions(generateDefaultQuestions()); // Use default questions on error
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-  const currentQuestion = questions[currentQuestionIndex];
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    console.warn(error); // Log the error message
+  }
+
+  const currentQuestion = questions[currentQuestionIndex] || {}; // Fallback to an empty object
 
   const handleOptionClick = (option) => {
     setSelectedOption(option);
@@ -36,8 +196,13 @@ const Game02 = () => {
       setSelectedOption(null);
       setIsCorrect(null);
     } else {
-      localStorage.setItem("greeting", "Huraay!!\nYou have completed all fill in the blanks!");
-      navigate('/greeting');
+      try {
+        localStorage.setItem("greeting", "Huraay!!\nYou have completed all fill in the blanks!");
+        navigate('/greeting');
+      } catch (err) {
+        console.error("Error navigating to greeting page:", err.message);
+        setError("An error occurred. Please try again.");
+      }
     }
   };
 
@@ -47,7 +212,12 @@ const Game02 = () => {
       setSelectedOption(null);
       setIsCorrect(null);
     } else {
-      navigate("/");
+      try {
+        navigate("/");
+      } catch (err) {
+        console.error("Error navigating to home page:", err.message);
+        setError("An error occurred. Please try again.");
+      }
     }
   };
 
@@ -74,11 +244,11 @@ const Game02 = () => {
             transition={{ duration: 0.5 }}
             className="text-2xl font-semibold mb-2 mt-10"
           >
-            {currentQuestion.sentence}
+            {currentQuestion.sentence || "No question available"}
           </motion.div>
-          <p className="font-semibold mb-4">{`(${currentQuestion.translation})`}</p>
+          <p className="font-semibold mb-4">{`(${currentQuestion.translation || "No translation available"})`}</p>
           <div className="flex mt-15 justify-center gap-4 mb-2">
-            {currentQuestion.options.map((option, index) => (
+            {(currentQuestion.options || []).map((option, index) => (
               <motion.button
                 key={index}
                 onClick={() => handleOptionClick(option)}

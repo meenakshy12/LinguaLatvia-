@@ -14,3 +14,32 @@
     }
   ]
 }
+
+
+
+
+
+
+const messages = [
+  {
+    role: "system",
+    content: "You are an assistant that generates simple Latvian vocabulary questions for children learning Latvian. Each question includes a sentence with a missing word, an English translation, three options, and the correct answer."
+  },
+  {
+    role: "user",
+    content: `Give me 10 vocabulary questions in the following format:
+
+[
+  {
+    sentence: "_ _ _ ir liela",
+    translation: "The house is big",
+    options: ["māja", "auto", "skola"],
+    correctAnswer: "māja"
+  },
+  ...
+]
+
+Only return an array of exactly 10 objects in this format.`
+  }
+];
+
