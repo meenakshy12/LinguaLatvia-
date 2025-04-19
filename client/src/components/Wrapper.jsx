@@ -8,7 +8,7 @@ const Wrapper = ({children}) => {
                 <Navbar />
     {/* <div className="flex gap-3 relative h-full w-full z-0 "> */}
         {/* <SideBar/> */}
-      <div className="content container mx-auto ">{children}</div>
+      <div className="content container mx-auto mb-10 ">{children}</div>
     </div>
     // </div>
 

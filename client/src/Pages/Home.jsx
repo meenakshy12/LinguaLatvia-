@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import avatar from "../assets/woman.svg";
 import books from "../assets/books.svg";
 import fillBlanks from "../assets/fillBlanks.png";
+import puzzleMatch from "../assets/puzzleMatch.png";
 import { useNavigate } from 'react-router-dom';
 import Loader from '../components/Loader';
 import { auth, firebaseDb } from '../config/firebase'; // Import auth and firebaseDb from firebase config
@@ -53,10 +54,10 @@ const Home = () => {
       {/* Progress Quiz */}
       <div className="w-full max-w-md bg-[#4DD0E18A] rounded-[2rem] border border-black p-6 shadow-custom flex items-center justify-between">
         <div>
-          <h3 className="text-2xl font-semibold">Progress Quiz</h3>
-          <p className="text-sm">Track your progress overtime with this Quiz</p>
+        <h3 className="text-2xl font-semibold">Latvian Practice</h3>
+        <p className="text-sm">Read Latvian text and listen to its pronunciation for better learning.</p>
           <button onClick={() => { navigate("/game01") }} className="mt-5 cursor-pointer py-2 bg-[#7CA7F2FA] rounded-full sm:px-10 px-5 shadow hover:bg-[#7CA7F2] hover:font-semibold transition">
-            Take this Quiz
+            Start Reading
           </button>
         </div>
         <img
@@ -84,7 +85,28 @@ const Home = () => {
           className="sm:w-26 sm:h-26 h-20 w-20 object-contain"
         />
       </div>
+
+      {/* Match the Words */}
+<div className="w-full max-w-md bg-[#FFD54F8A] rounded-[2rem] border border-black p-6 shadow-custom flex items-center justify-between">
+  <div>
+    <h3 className="text-2xl font-semibold">Match the Words</h3>
+    <p className="text-sm">
+      Match the Latvian words with their English equivalents.
+      <br />
+    </p>
+    <button onClick={() => { navigate("/game03") }} className="mt-5 cursor-pointer py-2 bg-[#FFAB40FA] rounded-full sm:px-10 px-5 shadow hover:bg-[#FFAB40] hover:font-semibold transition">
+      Start Matching
+    </button>
+  </div>
+  <img
+    src={puzzleMatch}
+    alt="Match the Words"
+    className="sm:w-26 sm:h-26 h-20 w-20 object-contain"
+  />
+</div>
     </div>
+
+    
   );
 };
 
