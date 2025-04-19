@@ -26,7 +26,7 @@ const navigate=useNavigate();
     const themeColor = "#1B4A7E"; // Theme color from Chatbot.jsx
 
     return (
-        <nav className={`navbar w-screen shadow-sm flex justify-between pb-3 pt-5 px-10`} >
+        <nav className={`  navbar w-screen shadow-sm flex justify-between h-16 pb-3 pt-5 px-10`} >
             <div className="navbar-left">
                 <span className="navbar-logo text-xl font-bold text-[#1B4A7E]">LinguaLatvia</span>
             </div>
