@@ -34,7 +34,7 @@ const navigate=useNavigate();
     return (
         <nav className={`z-100  navbar w-screen shadow-sm flex justify-between h-16 pb-3 pt-5 px-10`} >
             <div className="navbar-left">
-                <span className="navbar-logo text-xl font-bold text-[#1B4A7E]">LinguaLatvia</span>
+                <span className="navbar-logo text-xl font-bold text-[#1B4A7E] cursor-pointer" onClick={()=>handelNavigation("/")}>LinguaLatvia</span>
             </div>
             <div className="navbar-right relative">
                 <div

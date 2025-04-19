@@ -84,7 +84,7 @@ const Game02 = () => {
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const response = await fetch("http://localhost:4000/game02", {
+        const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/game02`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -106,14 +106,14 @@ const Game02 = () => {
             .replace(/,\s*}/g, '}') // Remove trailing commas before closing braces
             .replace(/,\s*]/g, ']') // Remove trailing commas before closing brackets
             .trim();
-          console.log("Sanitized Content:", sanitizedContent); // Log sanitized content for debugging
+          // console.log("Sanitized Content:", sanitizedContent); // Log sanitized content for debugging
           parsedQuestions = JSON.parse(sanitizedContent);
         } catch (parseError) {
           console.error("Error parsing questions JSON:", parseError.message);
           throw new Error("Invalid JSON format received from the server.");
         }
 
-        console.log("Parsed Questions:", parsedQuestions); // Log parsed questions for debugging
+        // console.log("Parsed Questions:", parsedQuestions); // Log parsed questions for debugging
 
         // Validate and ensure we have exactly 10 questions
         if (!Array.isArray(parsedQuestions) || parsedQuestions.length < 10) {

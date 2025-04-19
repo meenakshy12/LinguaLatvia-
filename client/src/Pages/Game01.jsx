@@ -15,7 +15,7 @@ const Game01 = () => {
 const getApiData = async () => {
 
         try {
-            const response = await fetch("http://localhost:4000/game01", {
+            const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/game01`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -30,13 +30,13 @@ const getApiData = async () => {
         }
     };
     useEffect(() => {
-        console.log("Fetching tasks...");
+        // console.log("Fetching tasks...");
         setIsLoading(true);
 
         const fetchAndProcessTasks = async () => {
             try {
                 const extractedTasks = await getApiData();
-                console.log("Extracted tasks:", extractedTasks);
+                // console.log("Extracted tasks:", extractedTasks);
                 const defaultTasks = [
                     { lt: "māja", en: "House" },
                     { lt: "auto", en: "Car" },

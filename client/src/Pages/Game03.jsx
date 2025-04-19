@@ -16,14 +16,14 @@ const Game03 = () => {
   const fetchGameData = async () => {
     setLoading(true); // Set loading to true before fetching
     try {
-      const response = await fetch("http://localhost:4000/game03", {
+      const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/game03`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
       });
       const { gameData } = await response.json();
-      console.log(gameData, typeof gameData); // Log the API data for debugging
+      // console.log(gameData, typeof gameData); // Log the API data for debugging
 
       const combinedData = Array.isArray(gameData) && gameData.length > 0 
         ? gameData.slice(0, 4) // Use API data if valid
