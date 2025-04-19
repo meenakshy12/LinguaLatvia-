@@ -22,7 +22,7 @@ const App = () => {
             <Route path="/signup" element={<SignUp/>} />
             <Route path="/chatbot" element={        <Middleware><Wrapper><Chatbot/></Wrapper></Middleware>} />
             <Route path="/game01" element={        <Middleware><Wrapper><Game01/></Wrapper></Middleware>} /> 
-            <Route path="/greeting" element={<Middleware><Wrapper><Greeting /></Wrapper>x</Middleware>} />
+            <Route path="/greeting" element={<Middleware><Wrapper><Greeting /></Wrapper></Middleware>} />
             <Route path="*" element={<div className='flex justify-center items-center h-screen text-2xl font-bold'>404 Not Found</div>} />
         </Routes>
     

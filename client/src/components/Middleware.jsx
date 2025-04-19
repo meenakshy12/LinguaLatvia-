@@ -34,7 +34,7 @@ const Middleware = ({ children }) => {
   }, [navigate]);
 
   if (loading) {
-    return <div className='h-screen w-screen flex items-center justify-center gap-2 flex-col text-[#1B4A7E] font-semibold'> <Loader/>LinguaLatvia</div>; // Show a loading state during authentication process
+    return <Loader/>
   }
 
   return (
