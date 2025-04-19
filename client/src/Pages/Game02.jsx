@@ -12,7 +12,7 @@ function parseQuestions(text) {
     const data = JSON.parse(cleaned);
 
     // Optional validation
-    if (Array.isArray(data) && data.length === 10) {
+    if (Array.isArray(data)) {
       return data;
     } else {
       throw new Error("Invalid or incomplete data");
@@ -165,7 +165,18 @@ const Game02 = () => {
   useEffect(() => {
     try {
       const parsedQuestions = parseQuestions(responseText);
-      setQuestions(parsedQuestions);
+        console.log("Parsed Questions:", parsedQuestions); // Log parsed questions for debugging
+      // Ensure we have exactly 10 questions
+      if (parsedQuestions.length < 10) {
+        const defaultQuestions = generateDefaultQuestions();
+        const remainingQuestions = defaultQuestions.slice(parsedQuestions.length, 10);
+        // Combine parsed questions with default questions to ensure 10 total
+            console.log("Default Questions:", defaultQuestions); // Log default questions for debugging
+            console.log("Remaining Questions:", remainingQuestions); // Log remaining questions for debugging
+        setQuestions([...parsedQuestions, ...remainingQuestions]);
+      } else {
+        setQuestions(parsedQuestions);
+      }
     } catch (err) {
       console.error("Error parsing questions:", err.message);
       setError("Failed to load questions. Using default questions.");
