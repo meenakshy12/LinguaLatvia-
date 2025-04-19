@@ -1,16 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import avator from "../assets/woman.svg"; // Replace with your avatar image path
 import { CiLogout } from "react-icons/ci"; // Import the logout icon
 import { auth } from '../config/firebase';
 import { RiHome3Line, RiRobot2Line } from "react-icons/ri";
 import { useNavigate } from 'react-router-dom'; // Import useNavigate from react-router-dom
+import { TbGridDots } from "react-icons/tb"; // Import the grid icon
 
 const Navbar = () => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
-const navigate=useNavigate();
+    const dropdownRef = useRef(null); // Reference for the dropdown
+    const navigate = useNavigate();
+
     const toggleDropdown = () => {
         setDropdownOpen(!dropdownOpen);
     };
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setDropdownOpen(false); // Close dropdown if clicked outside
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
 
     const handleLogout = () => {
         // Add logout logic here
@@ -36,13 +52,14 @@ const navigate=useNavigate();
             <div className="navbar-left">
                 <span className="navbar-logo text-xl font-bold text-[#1B4A7E] cursor-pointer" onClick={()=>handelNavigation("/")}>LinguaLatvia</span>
             </div>
-            <div className="navbar-right relative">
+            <div className="navbar-right relative" ref={dropdownRef}>
                 <div
-                    className="profile-icon cursor-pointer size-8 rounded-full overflow-hidden "
+                    className="profile-icon cursor-pointer overflow-hidden "
                   
                     onClick={toggleDropdown}
                 >
-                    <img src={avator} alt="Profile" className="w-full h-full object-cover" />
+                    {/* <img src={avator} alt="Profile" className="w-full h-full object-cover" /> */}
+                    <TbGridDots className='text-2xl' />
                 </div>
                 {dropdownOpen && (
                     <div className="dropdown-menu absolute -right-3 mt-2 w-62 md:w-72 flex flex-col justify-center pt-3 bg-white text-black rounded-2xl shadow-lg">
