@@ -163,7 +163,7 @@ app.get("/game02", async (req, res) => {
   ...
 ]
 
-Only return an array of exactly 10 objects in this format.`,
+Only return an array of exactly 10 objects in this format not same data .`,
       },
     ];
 
@@ -199,7 +199,7 @@ app.get("/game03", async (req, res) => {
     const messages = [
       {
         role: "system",
-        content: "You are a helpful assistant that translates simple English words or phrases into Latvian. Respond in JSON format, with exactly 4 items like this: [{question: 'Hello', answer: 'Sveiki'}, ...]",
+        content: "You are a helpful assistant that translates simple English words or phrases into Latvian. Respond in JSON format, with exactly 4 items like this format in json: [{question: 'Hello', answer: 'Sveiki'}, ...]",
       },
       {
         role: "user",
@@ -218,12 +218,16 @@ app.get("/game03", async (req, res) => {
         model: "gpt-4o-mini",
         messages,
         temperature: 0.7,
-        max_tokens: 128,
+        max_tokens: 512,
       },
     };
 
     const response = await axios.request(options);
-    const content = response.data.choices[0].message.content;
+    let content = response.data.choices[0].message.content;
+
+    // Remove Markdown formatting (e.g., ```json and ```)
+    content = content.replace(/```json|```/g, "").trim();
+
     res.status(200).send({ gameData: JSON.parse(content) });
   } catch (error) {
     console.error("Error in /game03:", error.response?.data || error);
