@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import avator from "../assets/user2.png"; // Replace with your avatar image path
+import avator from "../assets/woman.svg"; // Replace with your avatar image path
 import { CiLogout } from "react-icons/ci"; // Import the logout icon
 import { auth } from '../config/firebase';
+import { RiHome3Line, RiRobot2Line } from "react-icons/ri";
 import { useNavigate } from 'react-router-dom'; // Import useNavigate from react-router-dom
 
 const Navbar = () => {
@@ -25,8 +26,13 @@ const navigate=useNavigate();
 
     const themeColor = "#1B4A7E"; // Theme color from Chatbot.jsx
 
+    const handelNavigation = (path) => {
+        setDropdownOpen(false); // Close the dropdown after navigation
+        navigate(path);
+    }
+
     return (
-        <nav className={`  navbar w-screen shadow-sm flex justify-between h-16 pb-3 pt-5 px-10`} >
+        <nav className={`z-100  navbar w-screen shadow-sm flex justify-between h-16 pb-3 pt-5 px-10`} >
             <div className="navbar-left">
                 <span className="navbar-logo text-xl font-bold text-[#1B4A7E]">LinguaLatvia</span>
             </div>
@@ -45,6 +51,20 @@ const navigate=useNavigate();
 
                         <div className="dropdown-item px-4 py-2 cursor-pointer truncate">{auth.currentUser?.email}</div>
                         <div
+                            className="dropdown-item px-4 py-2 cursor-pointer flex items-center gap-2 group hover:font-semibold" 
+                            onClick={()=>handelNavigation("/")}
+                        >
+                            <RiHome3Line     className="group-hover:font-semibold" />
+                            Home
+                        </div>
+                        <div
+                            className="dropdown-item px-4 py-2 cursor-pointer flex items-center gap-2 group hover:font-semibold" 
+                            onClick={()=>handelNavigation("/Chatbot")}
+                        >
+                            <RiRobot2Line    className="group-hover:font-semibold" />
+                            Chatbot
+                        </div>
+                         <div
                             className="dropdown-item px-4 py-2 cursor-pointer flex items-center gap-2 group hover:font-semibold" 
                             onClick={handleLogout}
                         >
