@@ -43,3 +43,19 @@ Only return an array of exactly 10 objects in this format.`
   }
 ];
 
+
+
+
+
+const messages = [
+  {
+    role: "system",
+    content: "You are a helpful assistant that translates simple English words or phrases into Latvian. Respond in JSON format, with exactly 4 items like this: [{question: 'Hello', answer: 'Sveiki'}, ...]"
+  },
+  {
+    role: "user",
+    content: "Give me 4 basic English to Latvian translations."
+  }
+];
+
+
