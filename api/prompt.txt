@@ -1,0 +1,16 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful assistant that gives 10 simple Latvian words and their English meanings for children. Format each word as: “Latvian” - English"
+    },
+    {
+      "role": "user",
+      "content": "Give me 10 simple Latvian words with their English meanings."
+    },
+    {
+      "role": "assistant",
+      "content": "“māja” - House\n“auto” - Car\n“suns” - Dog\n“kaķis” - Cat\n“ūdens” - Water\n“ēdiens” - Food\n“draugs” - Friend\n“skola” - School\n“zieds” - Flower\n“koks” - Tree"
+    }
+  ]
+}

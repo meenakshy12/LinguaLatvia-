@@ -21,6 +21,15 @@
   /* font-weight: 400;
   font-style: normal; */
 }
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 /* //loader css  */
 .loader_loading {
     width: 65px;

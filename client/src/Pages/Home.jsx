@@ -1,8 +1,10 @@
 import React from 'react'
 import avatar from "../assets/woman.svg";
 import books from "../assets/books.svg";
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
+  const navigate = useNavigate();
   return (
 
         <div className="min-h-screen  flex flex-col items-center py-6 space-y-4 px-4 md:mt-7">
@@ -21,7 +23,7 @@ const Home = () => {
             <div>
               <h3 className="text-2xl font-semibold">Progress Quiz</h3>
               <p className="text-sm">Track your progress overtime with this Quiz</p>
-              <button className="mt-2 cursor-pointer py-2 bg-[#7CA7F2FA]  rounded-full sm:px-10 px-5 shadow hover:bg-[#7CA7F2] hover:font-semibold transition">
+              <button onClick={()=>{navigate("/game01")}} className="mt-2 cursor-pointer py-2 bg-[#7CA7F2FA]  rounded-full sm:px-10 px-5 shadow hover:bg-[#7CA7F2] hover:font-semibold transition">
                 Take this Quiz
               </button>
             </div>
