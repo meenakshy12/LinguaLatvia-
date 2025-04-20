@@ -3,10 +3,10 @@ import { auth, firebaseDb } from "../config/firebase";
 
 
 export const saveToFirebaseGame01 = async (latestData) => {
-    console.log("Saving to Firebase:", { latestData });
+    // console.log("Saving to Firebase:", { latestData });
     try {
         const docRef = doc(firebaseDb, "game01", auth.currentUser.uid); // Use the current user's UID as the document ID
-        console.log("Document reference:", docRef);
+        // console.log("Document reference:", docRef);
 
         // Fetch previous data from Firebase
         const previousDoc = await getDoc(docRef);
@@ -24,7 +24,7 @@ export const saveToFirebaseGame01 = async (latestData) => {
         // Save both previous and latest data
         await setDoc(docRef, {gameData:combinedData}, { merge: true });
         // console.log("Data in document:", { previousData, latestData });
-        console.log("Game data saved successfully!");
+        // console.log("Game data saved successfully!");
     } catch (error) {
         console.error("Error saving game data:", error);
     }
