@@ -96,12 +96,18 @@ Your main goals are:
   }
 });
 
-app.get("/game01", async (req, res) => {
+app.post("/game01", async (req, res) => {
   try {
+    const previous = req.body.data || []; // Get the previous data from the request body
+    // console.log("Previous data:", previous.map(item => item.lt).join(", ")); // Log the previous data
     const messages = [
       {
         role: "system",
         content: "You are a helpful assistant that gives 10 simple Latvian words and their English meanings for children. Only this format: “Latvian” - English",
+      },
+      {
+        role:"system",
+        content:`Don't Repeaet theses words: "${previous.map(item => item.lt).join(", ")}"  -${previous.map(item => item.en).join(", ")} `
       },
       {
         role: "user",

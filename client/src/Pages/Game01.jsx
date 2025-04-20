@@ -5,6 +5,7 @@ import { IoIosArrowForward, IoIosArrowBack } from 'react-icons/io';
 import Loader from '../components/Loader';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion'; // Import for animations
+import {  getFromFirebaseGame01, saveToFirebaseGame01 } from '../helpers/game01';
 
 const Game01 = () => {
     const [currentTask, setCurrentTask] = React.useState(0);
@@ -12,31 +13,34 @@ const Game01 = () => {
     const [isLoading, setIsLoading] = React.useState(true);
     const [tasks, setTasks] = React.useState([]);
 
-const getApiData = async () => {
+const getApiData = async (previous) => {
+    try {
+        const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/game01`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ data: previous }) // Corrected placement of 'data'
+        });
+        const data = await response.json();
+        return data.gameData;
+    } catch (error) {
+        console.error("Error fetching game data:", error);
+        return null;
+    }
+};
 
-        try {
-            const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/game01`, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-            const data = await response.json();
-            return data.gameData;
-        }
-        catch (error) {
-            console.error("Error fetching game data:", error);
-            return null;
-        }
-    };
     useEffect(() => {
         // console.log("Fetching tasks...");
         setIsLoading(true);
 
         const fetchAndProcessTasks = async () => {
             try {
-                const extractedTasks = await getApiData();
+                const previous=await getFromFirebaseGame01(); // Fetch previous tasks from Firebase
+                console.log("Previous tasks:", previous);
+                const extractedTasks = await getApiData(previous);
                 // console.log("Extracted tasks:", extractedTasks);
+                saveToFirebaseGame01(extractedTasks); // Save the tasks to Firebase
                 const defaultTasks = [
                     { lt: "māja", en: "House" },
                     { lt: "auto", en: "Car" },
