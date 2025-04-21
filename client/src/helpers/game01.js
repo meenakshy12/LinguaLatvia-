@@ -20,7 +20,7 @@ export const saveToFirebaseGame01 = async (latestData) => {
         const combinedData = Array.from(previousDataSet).map(item => JSON.parse(item));
         // Limit to 10 items if necessary
         
-        // console.log("Combined game data:", combinedData);
+        console.log("Combined game data:", combinedData);
         // Save both previous and latest data
         await setDoc(docRef, {gameData:combinedData}, { merge: true });
         // console.log("Data in document:", { previousData, latestData });

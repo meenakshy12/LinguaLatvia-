@@ -40,7 +40,6 @@ const getApiData = async (previous) => {
                 console.log("Previous tasks:", previous);
                 const extractedTasks = await getApiData(previous);
                 // console.log("Extracted tasks:", extractedTasks);
-                saveToFirebaseGame01(extractedTasks); // Save the tasks to Firebase
                 const defaultTasks = [
                     { lt: "māja", en: "House" },
                     { lt: "auto", en: "Car" },
@@ -90,6 +89,8 @@ const getApiData = async (previous) => {
         if (currentTask < 9) {
             setCurrentTask((prev) => prev + 1);
         } else {
+            saveToFirebaseGame01(tasks); // Save the tasks to Firebase
+            
             localStorage.setItem("greeting", "Huraay!!\nYou have completed all tasks!");
             navigate('/greeting');
         }
