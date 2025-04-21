@@ -99,15 +99,17 @@ Your main goals are:
 app.post("/game01", async (req, res) => {
   try {
     const previous = req.body.data || []; // Get the previous data from the request body
-    //     console.log("Previous data:", previous.map(item => item.lt).join(", ")); // Log the previous data
+    const parseData = `Here is the list of words already provided: ${JSON.stringify(previous.map(item => item.lt))}. Do not repeat any of these.`; // Refined prompt for distinct data
+    // console.log("Previous data:", parseData); // Log the previous data
+
     const messages = [
       {
         role: "system",
-        content: "You are a helpful assistant that provides 10 simple Latvian words and their English meanings for children. Respond only in this format: [{lt: 'Latvian', en: 'English'}, ...].",
+        content: "You are a helpful assistant that provides 10 simple Latvian words and their English meanings for children. Respond only in json  format: [{lt: 'Latvian', en: 'English'}, ...].",
       },
       {
-        role:"system",
-        content:`Don't Repeaet theses words: "${previous.map(item => item.lt).join(", ")}"  -${previous.map(item => item.en).join(", ")} `
+        role: "system",
+        content: parseData,
       },
       {
         role: "user",
@@ -125,26 +127,23 @@ app.post("/game01", async (req, res) => {
       data: {
         model: "gpt-4o-mini",
         messages,
-        temperature: 0.7,
+        temperature: 0.5,
         max_tokens: 512,
       },
     };
 
     const response = await axios.request(options);
     const content = response.data.choices[0].message.content;
+    // console.log("content:", content); // Log the response content
 
-    // Extract tasks from the response
-    const tasks = content
-      .split("\n")
-      .map((line) => {
-        const match = line.match(/"(.+?)"\s*-\s*(.+)/);
-        return match ? { lt: match[1].trim(), en: match[2].trim() } : null;
-      })
-      .filter(Boolean);
+
+      // Remove Markdown formatting (e.g., ```json and ```) and parse as JSON
+      const tasks = JSON.parse(content.replace(/```json|```/g, "").trim());
+    
 
     res.status(200).send({ gameData: tasks });
   } catch (error) {
-    console.error("Error in /game01:", error.response?.data || error);
+    console.error("Error in /game01:", error.response?.data || error.message || error);
     res.status(500).send({ error: "Failed to generate game data." });
   }
 });

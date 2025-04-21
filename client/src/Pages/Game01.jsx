@@ -22,8 +22,9 @@ const getApiData = async (previous) => {
             },
             body: JSON.stringify({ data: previous }) // Corrected placement of 'data'
         });
-        const data = await response.json();
-        return data.gameData;
+        const {gameData} = await response.json();
+        // console.log("API response:", gameData,typeof gameData); // Log the API response for debugging
+        return gameData;
     } catch (error) {
         console.error("Error fetching game data:", error);
         return null;
@@ -39,7 +40,7 @@ const getApiData = async (previous) => {
                 const previous=await getFromFirebaseGame01(); // Fetch previous tasks from Firebase
                 console.log("Previous tasks:", previous);
                 const extractedTasks = await getApiData(previous);
-                // console.log("Extracted tasks:", extractedTasks);
+                console.log("Extracted tasks:", extractedTasks);
                 const defaultTasks = [
                     { lt: "māja", en: "House" },
                     { lt: "auto", en: "Car" },
@@ -52,8 +53,9 @@ const getApiData = async (previous) => {
                     { lt: "zieds", en: "Flower" },
                     { lt: "koks", en: "Tree" },
                 ];
-
+                // console.log("Default tasks:", extractedTasks);
                 const combinedTasks = [...extractedTasks, ...defaultTasks].slice(0, 10); // Ensure exactly 10 tasks
+                // console.log("Combined tasks:", combinedTasks);
                 setTasks(combinedTasks);
             } catch (error) {
                 console.error("Error processing tasks:", error);
