@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import ProgressBricks from '../components/ProgressBricks';
 import { motion } from 'framer-motion';
 import Loader from '../components/Loader';
-import { saveToFirebaseGame02 } from '../helpers/game02';
+import { getFromFirebaseGame02, saveToFirebaseGame02 } from '../helpers/game02';
 
 
 
@@ -85,11 +85,14 @@ const Game02 = () => {
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
+        const previousQuestions = await getFromFirebaseGame02(); // Fetch previous questions from Firebase
+        // console.log("Previous Questions:", previousQuestions); // Log previous questions for debugging
         const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/game02`, {
-          method: "GET",
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
+          body: JSON.stringify({ data: previousQuestions }) // Send previous questions to the server
         });
         // console.log("Response:", response); // Log the response for debugging
         if (!response.ok) {
@@ -109,7 +112,7 @@ const Game02 = () => {
             .trim();
           // console.log("Sanitized Content:", sanitizedContent); // Log sanitized content for debugging
           parsedQuestions = JSON.parse(sanitizedContent);
-          saveToFirebaseGame02(parsedQuestions); // Save the questions to Firebase
+          // saveToFirebaseGame02(parsedQuestions); // Save the questions to Firebase
         } catch (parseError) {
           console.error("Error parsing questions JSON:", parseError.message);
           throw new Error("Invalid JSON format received from the server.");
@@ -122,8 +125,8 @@ const Game02 = () => {
           console.warn("Incomplete or invalid questions received. Using default questions.");
           const defaultQuestions = generateDefaultQuestions();
           const remainingQuestions = defaultQuestions.slice(parsedQuestions.length || 0, 10);
-          console.log("Default Questions:", defaultQuestions); // Log default questions for debugging
-          console.log("Remaining Questions:", remainingQuestions); // Log remaining questions for debugging
+          // console.log("Default Questions:", defaultQuestions); // Log default questions for debugging
+          // console.log("Remaining Questions:", remainingQuestions); // Log remaining questions for debugging
           setQuestions([...(parsedQuestions || []), ...remainingQuestions]);
         } else {
           setQuestions(parsedQuestions);
@@ -162,6 +165,8 @@ const Game02 = () => {
       setIsCorrect(null);
     } else {
       try {
+        saveToFirebaseGame02(questions); // Save the questions to Firebase
+        // console.log("Saving to Firebase:", questions); // Log the questions being saved
         localStorage.setItem("greeting", "Huraay!!\nYou have completed all fill in the blanks!");
         navigate('/greeting');
       } catch (err) {

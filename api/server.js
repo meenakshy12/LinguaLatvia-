@@ -149,12 +149,18 @@ app.post("/game01", async (req, res) => {
   }
 });
 
-app.get("/game02", async (req, res) => {
+app.post("/game02", async (req, res) => {
   try {
+    const previous = req.body.data || []; // Get the previous data from the request body
+    const parseData=`Don't Repeaet theses questions : "${previous}"`; // Parse the previous data into a string`
+    // console.log("Previous data:", parseData); // Log the previous data
     const messages = [
       {
         role: "system",
         content: "You are an assistant that generates simple Latvian vocabulary questions for children learning Latvian. Each question includes a sentence with a missing word, an English translation, three options, and the correct answer.",
+      },   {
+        role:"system",
+        content:parseData
       },
       {
         role: "user",

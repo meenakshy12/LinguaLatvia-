@@ -30,3 +30,22 @@ export const saveToFirebaseGame02 = async (gameData) => {
         console.error("Error saving game data:", error);
     }
 }
+
+
+
+export const getFromFirebaseGame02 = async () => {
+    try {
+        const docRef = doc(firebaseDb, "game02", auth.currentUser.uid); // Use the current user's UID as the document ID
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            // console.log("Document data:", docSnap.data());
+            return docSnap.data().gameData || []; // Return gameData or an empty array if not found
+        } else {
+            console.log("No such document!");
+            return []; // Return an empty array if no document found
+        }
+    } catch (error) {
+        console.error("Error fetching game data:", error);
+        return []; // Return an empty array in case of error
+    }
+};
