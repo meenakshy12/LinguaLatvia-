@@ -38,9 +38,9 @@ const getApiData = async (previous) => {
         const fetchAndProcessTasks = async () => {
             try {
                 const previous=await getFromFirebaseGame01(); // Fetch previous tasks from Firebase
-                console.log("Previous tasks:", previous);
+                // console.log("Previous tasks:", previous);
                 const extractedTasks = await getApiData(previous);
-                console.log("Extracted tasks:", extractedTasks);
+                // console.log("Extracted tasks:", extractedTasks);
                 const defaultTasks = [
                     { lt: "māja", en: "House" },
                     { lt: "auto", en: "Car" },
