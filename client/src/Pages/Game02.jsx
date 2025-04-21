@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import ProgressBricks from '../components/ProgressBricks';
 import { motion } from 'framer-motion';
 import Loader from '../components/Loader';
+import { saveToFirebaseGame02 } from '../helpers/game02';
 
 
 
@@ -108,6 +109,7 @@ const Game02 = () => {
             .trim();
           // console.log("Sanitized Content:", sanitizedContent); // Log sanitized content for debugging
           parsedQuestions = JSON.parse(sanitizedContent);
+          saveToFirebaseGame02(parsedQuestions); // Save the questions to Firebase
         } catch (parseError) {
           console.error("Error parsing questions JSON:", parseError.message);
           throw new Error("Invalid JSON format received from the server.");
