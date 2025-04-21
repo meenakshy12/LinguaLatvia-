@@ -3,6 +3,7 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import Loader from "../components/Loader";
+import { getFromFirebaseGame03, saveToFirebaseGame03 } from "../helpers/gam03";
 
 const Game03 = () => {
   const [answers, setAnswers] = useState({});
@@ -16,14 +17,17 @@ const Game03 = () => {
   const fetchGameData = async () => {
     setLoading(true); // Set loading to true before fetching
     try {
+      const previousData = await getFromFirebaseGame03(); // Fetch previous data from Firebase
       const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/game03`, {
-        method: "GET",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
+        body: JSON.stringify({ data: previousData }), // Send previous data to the API
       });
       const { gameData } = await response.json();
       // console.log(gameData, typeof gameData); // Log the API data for debugging
+      console.log("Game data from API:", gameData);
 
       const combinedData = Array.isArray(gameData) && gameData.length > 0 
         ? gameData.slice(0, 4) // Use API data if valid
@@ -124,6 +128,7 @@ const Game03 = () => {
       return;
     }
 
+    saveToFirebaseGame03(data); // Save the game data to Firebase
     localStorage.setItem("greeting", "Huraay!!\nYou have completed all matching game!");
     navigate("/greeting");
   };

@@ -29,7 +29,7 @@ app.post("/", async (req, res) => {
     ); // Updated targetLang to 'en-US'
     // console.log("result:", result); // ✅ Log the translation result
     const translatedText = result.text;
-    console.log("Translated Text:", translatedText); // ✅ Log the translated text
+    // console.log("Translated Text:", translatedText); // ✅ Log the translated text
     const options = {
       method: "POST",
       url: "https://api.openai.com/v1/chat/completions",
@@ -74,12 +74,12 @@ Your main goals are:
     };
     const response = await axios.request(options);
     const content = response.data.choices[0].message.content;
-    console.log("content:", content);
+    // console.log("content:", content);
     //  reconvert into latvian language
 
     const result2 = await deeplClient.translateText(content, null, "lv"); // Updated targetLang to 'lv'
     // console.log("result:", result); // ✅ Log the translation result
-    console.log("Translated Text:", result2.text); // ✅ Log the translated text
+    // console.log("Translated Text:", result2.text); // ✅ Log the translated text
     res.status(200).send({
       bot: {
         en: content,
@@ -99,11 +99,11 @@ Your main goals are:
 app.post("/game01", async (req, res) => {
   try {
     const previous = req.body.data || []; // Get the previous data from the request body
-    // console.log("Previous data:", previous.map(item => item.lt).join(", ")); // Log the previous data
+    //     console.log("Previous data:", previous.map(item => item.lt).join(", ")); // Log the previous data
     const messages = [
       {
         role: "system",
-        content: "You are a helpful assistant that gives 10 simple Latvian words and their English meanings for children. Only this format: “Latvian” - English",
+        content: "You are a helpful assistant that provides 10 simple Latvian words and their English meanings for children. Respond only in this format: [{lt: 'Latvian', en: 'English'}, ...].",
       },
       {
         role:"system",
@@ -111,7 +111,7 @@ app.post("/game01", async (req, res) => {
       },
       {
         role: "user",
-        content: "Give me 10 simple Latvian words with their English meanings.",
+        content: "Provide 10 unique simple Latvian words with their English meanings that have not been given before.",
       },
     ];
 
@@ -126,7 +126,7 @@ app.post("/game01", async (req, res) => {
         model: "gpt-4o-mini",
         messages,
         temperature: 0.7,
-        max_tokens: 256,
+        max_tokens: 512,
       },
     };
 
@@ -152,19 +152,21 @@ app.post("/game01", async (req, res) => {
 app.post("/game02", async (req, res) => {
   try {
     const previous = req.body.data || []; // Get the previous data from the request body
-    const parseData=`Don't Repeaet theses questions : "${previous}"`; // Parse the previous data into a string`
+    const parseData = `Here is the list of questions already provided: ${JSON.stringify(previous)}. Do not repeat any of these.`; // Refined prompt for distinct data
     // console.log("Previous data:", parseData); // Log the previous data
+
     const messages = [
       {
         role: "system",
         content: "You are an assistant that generates simple Latvian vocabulary questions for children learning Latvian. Each question includes a sentence with a missing word, an English translation, three options, and the correct answer.",
-      },   {
-        role:"system",
-        content:parseData
+      },
+      {
+        role: "system",
+        content: parseData,
       },
       {
         role: "user",
-        content: `Give me 10 vocabulary questions,like this in the json format:
+        content: `Provide 10 unique vocabulary questions in this JSON format:
 [
   {
     sentence: "_ _ _ ir liela",
@@ -174,8 +176,7 @@ app.post("/game02", async (req, res) => {
   },
   ...
 ]
-
-Only return an array of exactly 10 objects in this format not same data .`,
+Ensure the questions are distinct and do not repeat any previously provided data.`,
       },
     ];
 
@@ -206,16 +207,24 @@ Only return an array of exactly 10 objects in this format not same data .`,
   }
 });
 
-app.get("/game03", async (req, res) => {
+app.post("/game03", async (req, res) => {
   try {
+    const previous = req.body.data || []; // Get the previous data from the request body
+    const parseData = `Here is the list of translations already provided: ${JSON.stringify(previous)}. Do not repeat any of these.`; // Refined prompt for distinct data
+    // console.log("Previous data:", parseData); // Log the previous data
+
     const messages = [
       {
         role: "system",
-        content: "You are a helpful assistant that translates simple English words or phrases into Latvian. Respond in JSON format, with exactly 4 items like this format in json: [{question: 'Hello', answer: 'Sveiki'}, ...]",
+        content: "You are a helpful assistant that translates simple English words or phrases into Latvian. Respond in JSON format with 4 items like this format: [{question: '', answer: ''}, ...].",
+      },
+      {
+        role: "system",
+        content: parseData,
       },
       {
         role: "user",
-        content: "Give me 4 basic English to Latvian translations.",
+        content: "Provide 4 unique English to Latvian translations that have not been given before.",
       },
     ];
 
@@ -229,8 +238,8 @@ app.get("/game03", async (req, res) => {
       data: {
         model: "gpt-4o-mini",
         messages,
-        temperature: 0.7,
-        max_tokens: 512,
+        temperature: 0.5,
+        max_tokens: 1024,
       },
     };
 
