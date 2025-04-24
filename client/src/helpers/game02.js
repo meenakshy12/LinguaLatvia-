@@ -3,7 +3,7 @@ import { auth, firebaseDb } from "../config/firebase";
 
 
 export const saveToFirebaseGame02 = async (gameData) => {
-    console.log("Saving game data to Firebase:", gameData);
+    // console.log("Saving game data to Firebase:", gameData);
     try{
         const docRef = doc(firebaseDb, "game02", auth.currentUser.uid); // Use the current user's UID as the document ID
         // console.log("Document reference:", docRef);

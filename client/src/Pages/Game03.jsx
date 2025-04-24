@@ -27,7 +27,7 @@ const Game03 = () => {
       });
       const { gameData } = await response.json();
       // console.log(gameData, typeof gameData); // Log the API data for debugging
-      console.log("Game data from API:", gameData);
+      // console.log("Game data from API:", gameData);
 
       const combinedData = Array.isArray(gameData) && gameData.length > 0 
         ? gameData.slice(0, 4) // Use API data if valid
