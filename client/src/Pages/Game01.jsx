@@ -112,7 +112,7 @@ const getApiData = async (previous) => {
         );
     }
     return (
-        <div className='flex flex-col justify-center relative items-center gap-7 mt-10'>
+        <div className='flex flex-col justify-center relative items-center gap-7 my-10'>
             <div className='w-full max-w-md flex items-start justify-start md:ml-0 ml-10'>
                 <button onClick={prevTask} className='size-8 cursor-pointer bg-black rounded-lg flex justify-center items-center'>
                     <IoIosArrowBack className='text-white text-2xl font-extrabold' />

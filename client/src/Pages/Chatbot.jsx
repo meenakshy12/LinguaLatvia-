@@ -136,7 +136,7 @@ const Chatbot = () => {
   };
 
   return (
-    <div className="h-[calc(100vh-64px)] relative flex flex-col ">
+    <div className="h-[calc(100dvh-64px)] relative flex flex-col ">
       <div className="flex-1  overflow-y-auto mt-0.5 p-6 space-y-6 max-w-4xl mx-auto w-full layout">
         <AnimatePresence>
           {posts.length === 0 && (
