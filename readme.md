@@ -6,32 +6,34 @@
 
 ## 🌐 **Features**
 
-
 - **Firebase Authentication** with email verification
--  **Chatbot** powered by **OpenAI** for natural, friendly conversations
--  **Translation** of messages between English and Latvian using **DeepL API**
--  **Grammar correction** and sentence improvement suggestions
+- **Chatbot** powered by **OpenAI** for natural, friendly conversations
+- **Translation** of messages between English and Latvian using **DeepL API**
+- **Grammar correction** and sentence improvement suggestions
 - **Level Tracker** to track student progress and learning levels
 - **Games for Learning**:
+
   1. **Word Meaning Game**: Learn the meaning of words in both Latvian and English, with integrated **Text-to-Speech (TTS)** for pronunciation.
   2. **Fill in the Blanks Game**: Test vocabulary and sentence structure by completing missing words.
   3. **Word Matching Game**: Match Latvian words with their English counterparts.
--  **MERN Stack** architecture (MongoDB, Express.js, React.js, Node.js)
--  **Language toggle** to switch between English and Latvian
--  **User-friendly** interface with chat options and language translation features
 
+- **MERN Stack** architecture (MongoDB, Express.js, React.js, Node.js)
+- **Language toggle** to switch between English and Latvian
+- **User-friendly** interface with chat options and language translation features
 
 ---
 
 ## 🛠️ **Technologies Used**
 
 ### **Frontend:**
+
 - **React.js** for building the user interface
 - **Firebase Authentication** for user sign-up and login
 - **Tailwind CSS** for responsive design and styling
 - **Axios** for making API calls
 
 ### **Backend:**
+
 - **Node.js** and **Express.js** for the server-side logic
 - **OpenAI API** (for chatbot responses)
 - **DeepL API** (for language translation)
@@ -155,9 +157,9 @@ The frontend will run on `http://localhost:5173`.
 4. The chatbot will **correct** any grammar mistakes and provide suggestions to improve your Latvian.
 5. Play games to further enhance your learning:
 
--     Word Meaning Game: Match words with their meanings in both Latvian and English.
--     Fill in the Blanks: Complete sentences by filling in missing words.
--     Word Matching: Match Latvian words with their corresponding English phrases.
+   -Word Meaning Game: Match words with their meanings in both Latvian and English.
+   -Fill in the Blanks: Complete sentences by filling in missing words.
+   -Word Matching: Match Latvian words with their corresponding English phrases.
 
 6. Track your learning progress with the Level Tracker to see how much you have advanced in your studies.
 
