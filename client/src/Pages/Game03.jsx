@@ -201,7 +201,7 @@ const Game03 = () => {
         <div className="sm:mx-0 mx-5 mt-7">
           <h2 className="text-2xl font-semibold mb-1">Matching Game</h2>
           <p className="text-[#00000099] text-sm mb-6">
-            (Drag the correct answer and drop it into the boxes)
+            (Hold the answer, then drag and drop it into the correct boxes)
           </p>
         </div>
         <div className="grid grid-cols-1 gap-4 pt-7 sm:mx-0 mx-5">
