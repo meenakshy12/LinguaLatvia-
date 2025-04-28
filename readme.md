@@ -157,9 +157,9 @@ The frontend will run on `http://localhost:5173`.
 4. The chatbot will **correct** any grammar mistakes and provide suggestions to improve your Latvian.
 5. Play games to further enhance your learning:
 
-   -Word Meaning Game: Match words with their meanings in both Latvian and English.
-   -Fill in the Blanks: Complete sentences by filling in missing words.
-   -Word Matching: Match Latvian words with their corresponding English phrases.
+- Word Meaning Game: Match words with their meanings in both Latvian and English.
+- Fill in the Blanks: Complete sentences by filling in missing words.
+- Word Matching: Match Latvian words with their corresponding English phrases.
 
 6. Track your learning progress with the Level Tracker to see how much you have advanced in your studies.
 
