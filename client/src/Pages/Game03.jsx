@@ -187,7 +187,7 @@ const Game03 = () => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -50 }}
       transition={{ duration: 0.5 }}
-      className="w-full max-w-md  mx-auto my-10"
+      className="w-full max-w-md  mx-auto max-h-[100dvh] my-10"
     >
       <>
         <div className="w-full max-w-md flex items-start justify-start md:ml-0 ml-10">
@@ -261,7 +261,7 @@ const Game03 = () => {
               </motion.div>
             ))}
         </div>
-        <div className="w-full max-w-md mt-20 flex items-end justify-end mr-15">
+        <div className="w-full max-w-md mt-20 flex items-end justify-end pr-10 mr-15">
           <button
             onClick={GoToGreeting}
             className="size-9 cursor-pointer bg-black rounded-full flex justify-center items-center"

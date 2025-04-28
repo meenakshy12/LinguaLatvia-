@@ -173,7 +173,7 @@ const Game02 = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center relative items-center gap-7 my-10">
+    <div className="flex h-full flex-col justify-center relative items-center gap-7 my-10">
       <div className="w-full max-w-md flex items-start justify-start md:ml-0 ml-10">
         <button
           onClick={prevQuestion}
