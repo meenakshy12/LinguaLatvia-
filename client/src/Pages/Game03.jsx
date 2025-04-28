@@ -187,7 +187,7 @@ const Game03 = () => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -50 }}
       transition={{ duration: 0.5 }}
-      className="w-full max-w-md mx-auto mt-10"
+      className="w-full max-w-md  mx-auto my-10"
     >
       <>
         <div className="w-full max-w-md flex items-start justify-start md:ml-0 ml-10">
