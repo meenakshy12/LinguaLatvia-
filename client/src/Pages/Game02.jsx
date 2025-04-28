@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { IoIosArrowForward, IoIosArrowBack } from 'react-icons/io';
-import { useNavigate } from 'react-router-dom';
-import ProgressBricks from '../components/ProgressBricks';
-import { motion } from 'framer-motion';
-import Loader from '../components/Loader';
-import { getFromFirebaseGame02, saveToFirebaseGame02 } from '../helpers/game02';
-
-
+import React, { useState, useEffect } from "react";
+import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
+import { useNavigate } from "react-router-dom";
+import ProgressBricks from "../components/ProgressBricks";
+import { motion } from "framer-motion";
+import Loader from "../components/Loader";
+import { getFromFirebaseGame02, saveToFirebaseGame02 } from "../helpers/game02";
 
 function generateDefaultQuestions() {
   return [
@@ -14,65 +12,65 @@ function generateDefaultQuestions() {
       sentence: "_ _ _ ir silta",
       translation: "The soup is warm",
       options: ["zupa", "ūdens", "maize"],
-      correctAnswer: "zupa"
+      correctAnswer: "zupa",
     },
     {
       sentence: "_ _ _ ir zila",
       translation: "The sky is blue",
       options: ["debesis", "zivs", "upe"],
-      correctAnswer: "debesis"
+      correctAnswer: "debesis",
     },
     {
       sentence: "_ _ _ ir garšīgs",
       translation: "The bread is tasty",
       options: ["piens", "maize", "siers"],
-      correctAnswer: "maize"
+      correctAnswer: "maize",
     },
     {
       sentence: "_ _ _ ir salda",
       translation: "The cake is sweet",
       options: ["kūka", "zivs", "bumbieris"],
-      correctAnswer: "kūka"
+      correctAnswer: "kūka",
     },
     {
       sentence: "_ _ _ ir balts",
       translation: "The snow is white",
       options: ["lietus", "sniegs", "mākonis"],
-      correctAnswer: "sniegs"
+      correctAnswer: "sniegs",
     },
     {
       sentence: "_ _ _ ir auksts",
       translation: "The milk is cold",
       options: ["piens", "tēja", "kafija"],
-      correctAnswer: "piens"
+      correctAnswer: "piens",
     },
     {
       sentence: "_ _ _ ir liels",
       translation: "The mountain is big",
       options: ["kalns", "akmens", "upē"],
-      correctAnswer: "kalns"
+      correctAnswer: "kalns",
     },
     {
       sentence: "_ _ _ ir zaļš",
       translation: "The tree is green",
       options: ["koks", "zieds", "debesis"],
-      correctAnswer: "koks"
+      correctAnswer: "koks",
     },
     {
       sentence: "_ _ _ ir oranžs",
       translation: "The orange is orange",
       options: ["banāns", "apelsīns", "ābols"],
-      correctAnswer: "apelsīns"
+      correctAnswer: "apelsīns",
     },
     {
       sentence: "_ _ _ ir dzeltens",
       translation: "The sun is yellow",
       options: ["saule", "mēness", "zvaigzne"],
-      correctAnswer: "saule"
-    }
+      correctAnswer: "saule",
+    },
   ];
 }
-  
+
 const Game02 = () => {
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -87,50 +85,30 @@ const Game02 = () => {
       try {
         const previousQuestions = await getFromFirebaseGame02(); // Fetch previous questions from Firebase
         // console.log("Previous Questions:", previousQuestions); // Log previous questions for debugging
-        const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/game02`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ data: previousQuestions }) // Send previous questions to the server
-        });
+        const response = await fetch(
+          `${import.meta.env.VITE_SERVER_URL}/game02`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ data: previousQuestions }), // Send previous questions to the server
+          }
+        );
         // console.log("Response:", response); // Log the response for debugging
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        const { content } = await response.json(); // Access the content property
-        // console.log("Fetched Questions (raw):", content); // Log raw fetched questions for debugging
+        const { gameData } = await response.json(); // Access the content
+        // console.log("Game Data:", gameData); // Log the game data for debugging
+        const defaultQuestions = generateDefaultQuestions(); // Generate default questions
 
-        let parsedQuestions;
-        try {
-          // Sanitize and parse the content string
-          const sanitizedContent = content
-            .replace(/```json|```/g, '') // Remove markdown-like code block markers
-            .replace(/[\r\n]/g, '') // Remove line breaks
-            .replace(/,\s*}/g, '}') // Remove trailing commas before closing braces
-            .replace(/,\s*]/g, ']') // Remove trailing commas before closing brackets
-            .trim();
-          // console.log("Sanitized Content:", sanitizedContent); // Log sanitized content for debugging
-          parsedQuestions = JSON.parse(sanitizedContent);
-          // saveToFirebaseGame02(parsedQuestions); // Save the questions to Firebase
-        } catch (parseError) {
-          console.error("Error parsing questions JSON:", parseError.message);
-          throw new Error("Invalid JSON format received from the server.");
-        }
-
-        // console.log("Parsed Questions:", parsedQuestions); // Log parsed questions for debugging
-
-        // Validate and ensure we have exactly 10 questions
-        if (!Array.isArray(parsedQuestions) || parsedQuestions.length < 10) {
-          console.warn("Incomplete or invalid questions received. Using default questions.");
-          const defaultQuestions = generateDefaultQuestions();
-          const remainingQuestions = defaultQuestions.slice(parsedQuestions.length || 0, 10);
-          // console.log("Default Questions:", defaultQuestions); // Log default questions for debugging
-          // console.log("Remaining Questions:", remainingQuestions); // Log remaining questions for debugging
-          setQuestions([...(parsedQuestions || []), ...remainingQuestions]);
-        } else {
-          setQuestions(parsedQuestions);
-        }
+        // Combine gameData and defaultQuestions, then use the first 10 questions
+        const combinedQuestions = [...gameData, ...defaultQuestions].slice(
+          0,
+          10
+        );
+        setQuestions(combinedQuestions); // Set the combined questions
       } catch (err) {
         console.error("Error fetching questions:", err.message);
         setError("Failed to load questions. Using default questions.");
@@ -144,7 +122,7 @@ const Game02 = () => {
   }, []);
 
   if (loading) {
-    return <Loader/>;
+    return <Loader />;
   }
 
   if (error) {
@@ -167,8 +145,11 @@ const Game02 = () => {
       try {
         saveToFirebaseGame02(questions); // Save the questions to Firebase
         // console.log("Saving to Firebase:", questions); // Log the questions being saved
-        localStorage.setItem("greeting", "Huraay!!\nYou have completed all fill in the blanks!");
-        navigate('/greeting');
+        localStorage.setItem(
+          "greeting",
+          "Huraay!!\nYou have completed all fill in the blanks!"
+        );
+        navigate("/greeting");
       } catch (err) {
         console.error("Error navigating to greeting page:", err.message);
         setError("An error occurred. Please try again.");
@@ -194,11 +175,18 @@ const Game02 = () => {
   return (
     <div className="flex flex-col justify-center relative items-center gap-7 mt-10">
       <div className="w-full max-w-md flex items-start justify-start md:ml-0 ml-10">
-        <button onClick={prevQuestion} className="size-8 cursor-pointer bg-black rounded-lg flex justify-center items-center">
+        <button
+          onClick={prevQuestion}
+          className="size-8 cursor-pointer bg-black rounded-lg flex justify-center items-center"
+        >
           <IoIosArrowBack className="text-white text-2xl font-extrabold" />
         </button>
       </div>
-      <ProgressBricks current={currentQuestionIndex + 1} heading="Fill in the blanks" subheading="(select right answer from the boxes)" />
+      <ProgressBricks
+        current={currentQuestionIndex + 1}
+        heading="Fill in the blanks"
+        subheading="(select right answer from the boxes)"
+      />
       <motion.div
         key={currentQuestionIndex}
         initial={{ opacity: 0, x: 50 }}
@@ -216,7 +204,9 @@ const Game02 = () => {
           >
             {currentQuestion.sentence || "No question available"}
           </motion.div>
-          <p className="font-semibold mb-4">{`(${currentQuestion.translation || "No translation available"})`}</p>
+          <p className="font-semibold mb-4">{`(${
+            currentQuestion.translation || "No translation available"
+          })`}</p>
           <div className="flex mt-15 justify-center gap-4 mb-2">
             {(currentQuestion.options || []).map((option, index) => (
               <motion.button
@@ -227,9 +217,9 @@ const Game02 = () => {
                 className={`px-4 py-2 text-lg border rounded-lg cursor-pointer border-black ${
                   selectedOption === option
                     ? isCorrect
-                      ? 'text-green-400 font-semibold border-green-400'
-                      : 'font-semibold text-red-400 border-red-400'
-                    : 'text-normal text-black border-black'
+                      ? "text-green-400 font-semibold border-green-400"
+                      : "font-semibold text-red-400 border-red-400"
+                    : "text-normal text-black border-black"
                 }`}
               >
                 {option}
@@ -241,22 +231,27 @@ const Game02 = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5 }}
-              className={`mt-2 text-lg ${isCorrect ? 'text-green-500' : 'text-red-500'}`}
+              className={`mt-2 text-lg ${
+                isCorrect ? "text-green-500" : "text-red-500"
+              }`}
             >
-              {isCorrect ? 'Correct!' : 'Wrong, try again.'}
+              {isCorrect ? "Correct!" : "Wrong, try again."}
             </motion.div>
           )}
         </div>
       </motion.div>
       <div className="w-full max-w-md mt-72 flex items-end justify-end mr-10">
-       <button onClick={nextQuestion} className='size-9 cursor-pointer bg-black rounded-full flex justify-center items-center'>
-                           <motion.div
-                               whileHover={{ x: 5 }} // Add horizontal animation on hover
-                               transition={{ type: "spring", stiffness: 300 }}
-                           >
-                               <IoIosArrowForward className='text-white text-3xl font-extrabold' />
-                           </motion.div>
-                       </button>
+        <button
+          onClick={nextQuestion}
+          className="size-9 cursor-pointer bg-black rounded-full flex justify-center items-center"
+        >
+          <motion.div
+            whileHover={{ x: 5 }} // Add horizontal animation on hover
+            transition={{ type: "spring", stiffness: 300 }}
+          >
+            <IoIosArrowForward className="text-white text-3xl font-extrabold" />
+          </motion.div>
+        </button>
       </div>
     </div>
   );

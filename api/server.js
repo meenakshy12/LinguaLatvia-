@@ -152,30 +152,37 @@ app.post("/game02", async (req, res) => {
   try {
     const previous = req.body.data || []; // Get the previous data from the request body
     const parseData = `Here is the list of questions already provided: ${JSON.stringify(previous)}. Do not repeat any of these.`; // Refined prompt for distinct data
-    // console.log("Previous data:", parseData); // Log the previous data
 
     const messages = [
       {
         role: "system",
-        content: "You are an assistant that generates simple Latvian vocabulary questions for children learning Latvian. Each question includes a sentence with a missing word, an English translation, three options, and the correct answer.",
-      },
-      {
-        role: "system",
-        content: parseData,
-      },
-      {
-        role: "user",
-        content: `Provide 10 unique vocabulary questions in this JSON format:
+        content: `You are an assistant that generates simple Latvian vocabulary questions for children learning Latvian. Each question must:
+- Be grammatically correct and natural.
+- Include a sentence with a missing word (fill-in-the-blank format).
+- Provide an English translation of the sentence.
+- Include three options for the missing word.
+- Specify the correct answer.
+
+Respond in this JSON format:
 [
   {
-    sentence: "_ _ _ ir liela",
-    translation: "The house is big",
-    options: ["māja", "auto", "skola"],
-    correctAnswer: "māja"
+    "sentence": "_ _ _ ir liela",
+    "translation": "The house is big",
+    "options": ["māja", "auto", "skola"],
+    "correctAnswer": "māja"
   },
   ...
 ]
-Ensure the questions are distinct and do not repeat any previously provided data.`,
+
+Ensure:
+1. The questions are unique and do not repeat any previously provided data.
+2. The options are relevant to the sentence.
+3. The correct answer is accurate.
+${parseData}`,
+      },
+      {
+        role: "user",
+        content: "Provide 10 unique vocabulary questions in the specified format.",
       },
     ];
 
@@ -197,9 +204,20 @@ Ensure the questions are distinct and do not repeat any previously provided data
     const response = await axios.request(options);
     const content = response.data.choices[0].message.content;
 
-    
-
-    res.status(200).send({ content });
+    // Validate and parse the JSON response
+    // asda
+    let questions;
+    try {
+      questions = JSON.parse(content);
+      if (!Array.isArray(questions) || questions.some(q => !q.sentence || !q.translation || !q.options || !q.correctAnswer)) {
+        throw new Error("Invalid response format");
+      }
+    } catch (parseError) {
+      console.error("Error parsing JSON response:", parseError);
+      return res.status(500).send({ error: "Failed to parse AI response." });
+    }
+    // console.log("Parsed questions:", questions); // Log the parsed <questions></questions>
+    res.status(200).send({ gameData: questions });
   } catch (error) {
     console.error("Error in /game02:", error.response?.data || error.message || error);
     res.status(500).send({ error: "Failed to generate game data." });
