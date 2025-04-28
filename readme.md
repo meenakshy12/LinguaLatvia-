@@ -194,4 +194,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ---
 
-You can now use this `README.md` file to publish your **LiguaLativa** chatbot project on GitHub. Let me know if you need further assistance or modifications!
+You can now use this `README.md` file to publish your **LiguaLativa** project on GitHub. Let me know if you need further assistance or modifications!
