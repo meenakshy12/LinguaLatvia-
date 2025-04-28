@@ -6,13 +6,20 @@
 
 ## 🌐 **Features**
 
+
 - **Firebase Authentication** with email verification
 -  **Chatbot** powered by **OpenAI** for natural, friendly conversations
 -  **Translation** of messages between English and Latvian using **DeepL API**
 -  **Grammar correction** and sentence improvement suggestions
+- **Level Tracker** to track student progress and learning levels
+- **Games for Learning**:
+  1. **Word Meaning Game**: Learn the meaning of words in both Latvian and English, with integrated **Text-to-Speech (TTS)** for pronunciation.
+  2. **Fill in the Blanks Game**: Test vocabulary and sentence structure by completing missing words.
+  3. **Word Matching Game**: Match Latvian words with their English counterparts.
 -  **MERN Stack** architecture (MongoDB, Express.js, React.js, Node.js)
 -  **Language toggle** to switch between English and Latvian
 -  **User-friendly** interface with chat options and language translation features
+
 
 ---
 
@@ -82,7 +89,7 @@ npm install
 Create a `.env` file in the `api/` folder and add the following environment variables:
 
 ```env
-PORT=5000
+PORT=4000
 OPENAI_API_KEY=your_openai_api_key
 DEEPL_API_KEY=your_deepl_api_key
 ```
@@ -123,7 +130,7 @@ VITE_FB_PROJECT_ID=your_firebase_project_id
 VITE_FB_STORAGE_BUCKET=your_firebase_storage_bucket
 VITE_FB_MESSAGING_SENDER_ID=your_firebase_messaging_sender_id
 VITE_FB_APP_ID=your_firebase_app_id
-VITE_SERVER_URL=http://localhost:5000
+VITE_SERVER_URL=http://localhost:4000
 ```
 
 Replace the Firebase API keys with your own credentials.
@@ -146,6 +153,13 @@ The frontend will run on `http://localhost:5173`.
 2. Start **chatting** with the chatbot. You can write messages in **Latvian**.
 3. Use the **Translate** button to see the response in the alternate language.
 4. The chatbot will **correct** any grammar mistakes and provide suggestions to improve your Latvian.
+5. Play games to further enhance your learning:
+
+-     Word Meaning Game: Match words with their meanings in both Latvian and English.
+-     Fill in the Blanks: Complete sentences by filling in missing words.
+-     Word Matching: Match Latvian words with their corresponding English phrases.
+
+6. Track your learning progress with the Level Tracker to see how much you have advanced in your studies.
 
 ---
 
@@ -174,12 +188,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ---
 
-### Explanation:
-- **Technologies Used**: Lists the main tech stack for both frontend and backend.
-- **Setup Instructions**: Provides detailed steps for setting up both the frontend and backend, including the creation of `.env` files for configuration.
-- **Folder Structure**: Breaks down the project folder structure to make it easy for others to understand how the project is organized.
-- **Usage**: Explains the user workflow and functionality of the chatbot.
-- **Future Improvements**: Suggestions for additional features you may want to add to the project.
-- **Acknowledgements**: Credit to external resources like OpenAI, Firebase, and DeepL.
-  
 You can now use this `README.md` file to publish your **LiguaLativa** chatbot project on GitHub. Let me know if you need further assistance or modifications!
