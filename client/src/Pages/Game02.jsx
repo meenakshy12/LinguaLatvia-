@@ -5,6 +5,7 @@ import ProgressBricks from "../components/ProgressBricks";
 import { motion } from "framer-motion";
 import Loader from "../components/Loader";
 import { getFromFirebaseGame02, saveToFirebaseGame02 } from "../helpers/game02";
+import toast from "react-hot-toast";
 
 function generateDefaultQuestions() {
   return [
@@ -78,6 +79,7 @@ const Game02 = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
+  const [score, setScore] = useState(0); // State to track the score
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -132,11 +134,22 @@ const Game02 = () => {
   const currentQuestion = questions[currentQuestionIndex] || {}; // Fallback to an empty object
 
   const handleOptionClick = (option) => {
-    setSelectedOption(option);
-    setIsCorrect(option === currentQuestion.correctAnswer);
+    if (selectedOption === null) {
+      // Prevent changing selection after an option is chosen
+      setSelectedOption(option);
+      const correct = option === currentQuestion.correctAnswer;
+      setIsCorrect(correct);
+      if (correct) {
+        setScore((prevScore) => prevScore + 10); // Increment score by 10 for correct answer
+      }
+    }
   };
 
   const nextQuestion = () => {
+    if (!selectedOption) {
+      toast.error("Please select an option before proceeding."); // Alert if no option is selected
+      return;
+    }
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex((prev) => prev + 1);
       setSelectedOption(null);
@@ -147,8 +160,9 @@ const Game02 = () => {
         // console.log("Saving to Firebase:", questions); // Log the questions being saved
         localStorage.setItem(
           "greeting",
-          "Huraay!!\nYou have completed all fill in the blanks!"
+          `Huraay!!\nYou have completed all fill in the blanks!\nYour score: ${score}/100`
         );
+        // alert(`Congratulations! Your final score is ${score}/100`); // Alert the final score
         navigate("/greeting");
       } catch (err) {
         console.error("Error navigating to greeting page:", err.message);
@@ -212,13 +226,16 @@ const Game02 = () => {
               <motion.button
                 key={index}
                 onClick={() => handleOptionClick(option)}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
+                whileHover={{ scale: selectedOption === null ? 1.1 : 1 }} // Only scale on hover if no option is selected
+                whileTap={{ scale: selectedOption === null ? 0.9 : 1 }} // Only scale on tap if no option is selected
+                disabled={selectedOption !== null} // Disable button if an option is selected
                 className={`px-4 py-2 text-lg border rounded-lg cursor-pointer border-black ${
                   selectedOption === option
                     ? isCorrect
                       ? "text-green-400 font-semibold border-green-400"
                       : "font-semibold text-red-400 border-red-400"
+                    : selectedOption && option === currentQuestion.correctAnswer
+                    ? "text-green-400 font-semibold border-green-400" // Highlight correct answer if wrong option is selected
                     : "text-normal text-black border-black"
                 }`}
               >
@@ -226,6 +243,16 @@ const Game02 = () => {
               </motion.button>
             ))}
           </div>
+          {selectedOption && !isCorrect && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+              className="mt-2 text-lg text-green-500"
+            >
+              Correct answer: {currentQuestion.correctAnswer}
+            </motion.div>
+          )}
           {selectedOption && (
             <motion.div
               initial={{ opacity: 0 }}
