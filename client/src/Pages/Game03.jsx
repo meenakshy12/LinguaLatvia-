@@ -3,6 +3,7 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import Loader from "../components/Loader";
+import { toast } from "react-hot-toast";
 import { getFromFirebaseGame03, saveToFirebaseGame03 } from "../helpers/gam03";
 
 const Game03 = () => {
@@ -12,6 +13,7 @@ const Game03 = () => {
   const [data, setData] = useState([]);
   const [validated, setValidated] = useState(false); // Track if validation is triggered
   const [loading, setLoading] = useState(true); // Loading state
+
   const navigate = useNavigate();
 
   const fetchGameData = async () => {
@@ -28,23 +30,34 @@ const Game03 = () => {
           body: JSON.stringify({ data: previousData }), // Send previous data to the API
         }
       );
-      const { gameData } = await response.json();
-      // console.log(gameData, typeof gameData); // Log the API data for debugging
-      // console.log("Game data from API:", gameData);
-
+      const { gameData, extraOption } = await response.json();
+      const extraOp=extraOption.map((item) => item); // Extract extra options from the API response
+      // console.log("Game data from API:", gameData,extraOp); // Log the fetched game data
       const combinedData =
         Array.isArray(gameData) && gameData.length > 0
           ? gameData.slice(0, 4) // Use API data if valid
           : [
-              { question: "māja", answer: "House" },
-              { question: "auto", answer: "Car" },
-              { question: "suns", answer: "Dog" },
-              { question: "kaķis", answer: "Cat" },
+              { answer: "māja", question: "House" },
+              { answer: "auto", question: "Car" },
+              { answer: "suns", question: "Dog" },
+              { answer: "kaķis", question: "Cat" },
             ]; // Default data fallback
+
+      const extraOptions =
+        Array.isArray(extraOption) && extraOption.length > 0
+          ? extraOption
+          : ["grāmata", "skolas"]; // Add meaningful extra options in Latvian
+          // console.log("Extra options:", extraOptions,typeof extraOptions); // Log the extra options
+      const allOptions = shuffleArray([
+        ...combinedData.map((item) => item.answer),
+        ...(Array.isArray(extraOptions) ? extraOptions : []), // Ensure 
+        // extraOptions is an array before spreading
+      ]);
+      // console.log("All options:",allOptions)
 
       setData(combinedData);
       setQuestions(combinedData.map((item) => item.question));
-      setOptions(shuffleArray(combinedData.map((item) => item.answer)));
+      setOptions(allOptions); // Use the combined options
       setAnswers(
         combinedData.reduce((acc, item) => {
           const questionKey = item.question?.toLowerCase() || ""; // Safely handle undefined
@@ -56,14 +69,20 @@ const Game03 = () => {
 
       // Use default data in case of an error
       const defaultData = [
-        { question: "māja", answer: "House" },
-        { question: "auto", answer: "Car" },
-        { question: "suns", answer: "Dog" },
-        { question: "kaķis", answer: "Cat" },
+        { answer: "māja", question: "House" },
+        { answer: "auto", question: "Car" },
+        { answer: "suns", question: "Dog" },
+        { answer: "kaķis", question: "Cat" },
       ];
+      const extraOptions = ["grāmata", "skola"]; // Add meaningful extra options in Latvian
+      const allOptions = shuffleArray([
+        ...defaultData.map((item) => item.answer),
+        ...extraOptions,
+      ]);
+
       setData(defaultData);
       setQuestions(defaultData.map((item) => item.question));
-      setOptions(shuffleArray(defaultData.map((item) => item.answer)));
+      setOptions(allOptions); // Use the combined options
       setAnswers(
         defaultData.reduce((acc, item) => {
           const questionKey = item.question?.toLowerCase() || ""; // Safely handle undefined
@@ -148,37 +167,49 @@ const Game03 = () => {
     return userAnswer === correctAnswer ? "border-green-500" : "border-red-500";
   };
 
-  const GoToGreeting = () => {
-    const allAnswered = Object.values(answers).every((answer) => answer !== "");
-    const allCorrect = questions.every((q) => {
+  const calculateScore = () => {
+    let currentScore = 0;
+    questions.forEach((q) => {
       const questionKey = q.toLowerCase();
       const foundItem = data.find(
         (item) => item.question?.toLowerCase() === questionKey
       );
-      if (!foundItem) return false; // If no matching item, consider it incorrect
-      const correctAnswer = foundItem.answer;
-      return answers[questionKey] === correctAnswer;
+      // console.log(
+      //   "Found item:",
+      //   foundItem,
+      //   answers[questionKey],
+      //   foundItem.answer
+      // ); // Log the found item for debugging
+      if (foundItem && answers[questionKey] === foundItem.answer) {
+        currentScore += 12.5; // Each correct answer gives 12.5 points (50/4)
+        // console.log(
+        //   `Correct answer for ${q}: ${answers[questionKey]} (Score: ${currentScore})`
+        // );
+      }
     });
+    return currentScore;
+  };
+
+  const GoToGreeting = () => {
+    const allAnswered = Object.values(answers).every((answer) => answer !== "");
 
     if (!allAnswered) {
-      alert("Please answer all questions before proceeding.");
+      toast.error("Please answer all questions before proceeding.");
       return;
     }
 
-    if (!allCorrect) {
-      alert(
-        "Some answers are incorrect. Please correct them before proceeding."
-      );
-      return;
-    }
+    // Ensure the score is calculated before proceeding
 
     saveToFirebaseGame03(data); // Save the game data to Firebase
     localStorage.setItem(
       "greeting",
-      "Huraay!!\nYou have completed all matching game!"
+      `Huraay!!\nYou have completed all matching game.\nYour score : ${calculateScore()}/50!`
     );
-    navigate("/greeting");
+    setTimeout(() => {
+      navigate("/greeting");
+    }, 1000); // Navigate to the greeting page after a short delay
   };
+
   if (loading) return <Loader />; // Loading state
 
   return (

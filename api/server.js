@@ -233,7 +233,7 @@ app.post("/game03", async (req, res) => {
     const messages = [
       {
         role: "system",
-        content: "You are a helpful assistant that translates simple English words or phrases into Latvian. Respond in JSON format with 4 items like this format: [{question: '', answer: ''}, ...].",
+        content: "You are a helpful assistant that translates simple English words or phrases into Latvian. Respond in JSON format with 4 items like this format and two extra option to confuse user to give answer in latvain lanaguge extra option: [matchQ:[{question: '', answer: ''}, ...],extraoption:['','']].",
       },
       {
         role: "system",
@@ -262,15 +262,21 @@ app.post("/game03", async (req, res) => {
 
     const response = await axios.request(options);
     let content = response.data.choices[0].message.content;
-
+    
+    // console.log("content:", content); // Log the response content
     // Remove Markdown formatting (e.g., ```json and ```)
     content = content.replace(/```json|```/g, "").trim();
 
-    res.status(200).send({ gameData: JSON.parse(content) });
+    // Parse the JSON response and handle the structure
+    const parsedContent = JSON.parse(content);
+    const matchQ = parsedContent.matchQ || [];
+    const extraOption = parsedContent.extraoption || [];
+
+    res.status(200).send({ gameData: matchQ, extraOption });
   } catch (error) {
     console.error("Error in /game03:", error.response?.data || error);
     res.status(500).send({ error: "Failed to generate game data." });
   }
 });
 
-app.listen(4000, () => console.log("Server is running on port 4000"));
+app.listen(4000, () => console.log("Server is running."));
