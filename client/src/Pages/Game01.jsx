@@ -50,7 +50,7 @@ export default function Game01() {
     setLetters((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const nextWord = async() => {
+  const nextWord = () => {
     if (guess.length !== answer.length) {
       toast.error("Please arrange all letters before proceeding.");
       return;
@@ -71,7 +71,7 @@ export default function Game01() {
         setShowCorrectWord(false);
       } else {
         console.log("Game Over. Correct Answers:", correctAnswers);
-        await saveToFirebaseGame01(correctAnswers);
+        saveToFirebaseGame01(correctAnswers);
         const score = correctAnswers.length * 10; // Calculate score
         localStorage.setItem(
           "greeting",
