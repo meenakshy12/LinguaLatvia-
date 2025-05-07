@@ -96,27 +96,80 @@ Your main goals are:
   }
 });
 
+// app.post("/game01", async (req, res) => {
+//   try {
+//     const previous = req.body.data || []; // Get the previous data from the request body
+//     const parseData = `Here is the list of words already provided: ${JSON.stringify(previous.map(item => item.lt))}. Do not repeat any of these.`; // Refined prompt for distinct data
+//     // console.log("Previous data:", parseData); // Log the previous data
+
+//     const messages = [
+//       {
+//         role: "system",
+//         content: "You are a helpful assistant that provides 10 simple Latvian words and their English meanings for children. Respond only in json  format: [{lt: 'Latvian', en: 'English'}, ...].",
+//       },
+//       {
+//         role: "system",
+//         content: parseData,
+//       },
+//       {
+//         role: "user",
+//         content: "Provide 10 unique simple Latvian words with their English meanings that have not been given before.",
+//       },
+//     ];
+
+//     const options = {
+//       method: "POST",
+//       url: "https://api.openai.com/v1/chat/completions",
+//       headers: {
+//         "Content-Type": "application/json",
+//         Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+//       },
+//       data: {
+//         model: "gpt-4o-mini",
+//         messages,
+//         temperature: 0.5,
+//         max_tokens: 512,
+//       },
+//     };
+
+//     const response = await axios.request(options);
+//     const content = response.data.choices[0].message.content;
+//     // console.log("content:", content); // Log the response content
+
+
+//       // Remove Markdown formatting (e.g., ```json and ```) and parse as JSON
+//       const tasks = JSON.parse(content.replace(/```json|```/g, "").trim());
+    
+
+//     res.status(200).send({ gameData: tasks });
+//   } catch (error) {
+//     console.error("Error in /game01:", error.response?.data || error.message || error);
+//     res.status(500).send({ error: "Failed to generate game data." });
+//   }
+// });
+
+
 app.post("/game01", async (req, res) => {
+  const previous = req.body.data || []; // Get the previous data from the request body
+  const parseData = `Here is the list of words already provided: ${JSON.stringify(previous.map(item => item.word))}. Do not repeat any of these.`; // Refined prompt for distinct data
+
+  const messages = [
+    {
+      role: "system",
+      content: `You are a helpful assistant that provides five unique Latvian words with their English meanings as clues. Respond in JSON format:
+[{ "word": "...", "clue": "..." }]. Ensure the words are unique and do not repeat any previously provided words.`,
+    },
+    {
+      role: "system",
+      content: parseData,
+    },
+    {
+      role: "user",
+      content: "Provide five unique Latvian words with their English meanings.",
+    },
+  ];
+
   try {
-    const previous = req.body.data || []; // Get the previous data from the request body
-    const parseData = `Here is the list of words already provided: ${JSON.stringify(previous.map(item => item.lt))}. Do not repeat any of these.`; // Refined prompt for distinct data
-    // console.log("Previous data:", parseData); // Log the previous data
-
-    const messages = [
-      {
-        role: "system",
-        content: "You are a helpful assistant that provides 10 simple Latvian words and their English meanings for children. Respond only in json  format: [{lt: 'Latvian', en: 'English'}, ...].",
-      },
-      {
-        role: "system",
-        content: parseData,
-      },
-      {
-        role: "user",
-        content: "Provide 10 unique simple Latvian words with their English meanings that have not been given before.",
-      },
-    ];
-
     const options = {
       method: "POST",
       url: "https://api.openai.com/v1/chat/completions",
@@ -132,21 +185,24 @@ app.post("/game01", async (req, res) => {
       },
     };
 
-    const response = await axios.request(options);
-    const content = response.data.choices[0].message.content;
-    // console.log("content:", content); // Log the response content
+    const completion = await axios.request(options);
+    const content = completion.data.choices[0].message.content;
 
+    // Parse the JSON response and handle errors if parsing fails
+    const tasks = JSON.parse(content.replace(/```json|```/g, "").trim());
 
-      // Remove Markdown formatting (e.g., ```json and ```) and parse as JSON
-      const tasks = JSON.parse(content.replace(/```json|```/g, "").trim());
-    
-
-    res.status(200).send({ gameData: tasks });
+    res.json(tasks);
   } catch (error) {
-    console.error("Error in /game01:", error.response?.data || error.message || error);
-    res.status(500).send({ error: "Failed to generate game data." });
+    console.error("Error generating words:", error.response?.data || error.message || error);
+    res.status(500).json({ error: "Failed to fetch words." });
   }
 });
+
+// // Endpoint to check answer
+// app.post('/api/check', (req, res) => {
+//   const { guess, answer } = req.body;
+//   res.json({ correct: guess.toLowerCase() === answer.toLowerCase() });
+// });
 
 app.post("/game02", async (req, res) => {
   try {
