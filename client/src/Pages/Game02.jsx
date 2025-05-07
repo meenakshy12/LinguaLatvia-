@@ -80,6 +80,9 @@ const Game02 = () => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
   const [score, setScore] = useState(0); // State to track the score
+  const [correctlyAnsweredQuestions, setCorrectlyAnsweredQuestions] = useState(
+    []
+  ); // Track correctly answered questions
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -141,6 +144,7 @@ const Game02 = () => {
       setIsCorrect(correct);
       if (correct) {
         setScore((prevScore) => prevScore + 10); // Increment score by 10 for correct answer
+        setCorrectlyAnsweredQuestions((prev) => [...prev, currentQuestion]); // Add to correctly answered questions
       }
     }
   };
@@ -156,8 +160,8 @@ const Game02 = () => {
       setIsCorrect(null);
     } else {
       try {
-        saveToFirebaseGame02(questions); // Save the questions to Firebase
-        // console.log("Saving to Firebase:", questions); // Log the questions being saved
+        saveToFirebaseGame02(correctlyAnsweredQuestions); // Save only correctly answered questions to Firebase
+        // console.log("Saving to Firebase:", correctlyAnsweredQuestions); // Log the questions being saved
         localStorage.setItem(
           "greeting",
           `Huraay!!\nYou have completed all fill in the blanks!\nYour score: ${score}/100`
