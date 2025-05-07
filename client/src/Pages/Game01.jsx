@@ -28,7 +28,7 @@ export default function Game01() {
   const fetchWords = async () => {
     setLoading(true);
     const previousData = await getFromFirebaseGame01();
-    console.log("Prevous Data", previousData);
+    // console.log("Prevous Data", previousData);
     const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/game01`, {
       method: "POST",
       headers: {
@@ -162,7 +162,7 @@ export default function Game01() {
         {showCorrectWord && (
           <div
             className={`text-center text-lg font-bold ${
-              guess === answer ? "text-green-500" : "text-red-500"
+              guess === answer ? "text-green-400" : "text-red-400"
             }`}
           >
             Correct Word: {answer}
