@@ -1,19 +1,15 @@
 import { doc, getDoc } from "firebase/firestore";
 import { auth, firebaseDb } from "../config/firebase";
 
-async function fetchGameData(uid) {
-    const documents = ["game01", "game02", "game03"];
+async function fetchGameData(uid, databaseName) {
     let totalCount = 0;
 
-    for (const docName of documents) {
-        const docRef = doc(firebaseDb, docName, uid);
-        const docSnap = await getDoc(docRef);
+    const docRef = doc(firebaseDb, databaseName, uid);
+    const docSnap = await getDoc(docRef);
 
-        if (docSnap.exists()) {
-            const data = docSnap.data();
-            totalCount += Array.isArray(data.gameData) ? data.gameData.length : 0; // Assuming 'items' is the array in the document
-            // console.log(`Fetched data from ${docName} :`, totalCount);
-        }
+    if (docSnap.exists()) {
+        const data = docSnap.data();
+        totalCount += Array.isArray(data.gameData) ? data.gameData.length : 0; // Assuming 'gameData' is the array in the document
     }
 
     return totalCount;
@@ -33,8 +29,8 @@ function generateDynamicThresholds(totalCount) {
     return thresholds;
 }
 
-async function trackLevelProgression() {
-    const totalScore = await fetchGameData(auth.currentUser.uid);
+async function trackLevelProgression(databaseName="game01") {
+    const totalScore = await fetchGameData(auth.currentUser.uid, databaseName);
 
     let thresholds = generateDynamicThresholds(Math.max(totalScore, 20)); // Ensure at least level 1 threshold is generated
 
@@ -58,8 +54,7 @@ async function trackLevelProgression() {
         }
     }
 
-    // console.log(`Level No: ${levelNo}, Maximum Level Score: ${maximumLevelScore}, Your Score: ${totalScore}`);
-    return { levelNo, maximumLevelScore, yourScore: totalScore,percentage: Math.round((totalScore / maximumLevelScore) * 100) };
+    return { levelNo, maximumLevelScore, yourScore: totalScore, percentage: Math.round((totalScore / maximumLevelScore) * 100) };
 }
 
 export { trackLevelProgression };
