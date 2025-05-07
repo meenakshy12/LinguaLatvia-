@@ -31,7 +31,7 @@ const Game03 = () => {
         }
       );
       const { gameData, extraOption } = await response.json();
-      const extraOp=extraOption.map((item) => item); // Extract extra options from the API response
+      const extraOp = extraOption.map((item) => item); // Extract extra options from the API response
       // console.log("Game data from API:", gameData,extraOp); // Log the fetched game data
       const combinedData =
         Array.isArray(gameData) && gameData.length > 0
@@ -47,10 +47,10 @@ const Game03 = () => {
         Array.isArray(extraOption) && extraOption.length > 0
           ? extraOption
           : ["grāmata", "skolas"]; // Add meaningful extra options in Latvian
-          // console.log("Extra options:", extraOptions,typeof extraOptions); // Log the extra options
+      // console.log("Extra options:", extraOptions,typeof extraOptions); // Log the extra options
       const allOptions = shuffleArray([
         ...combinedData.map((item) => item.answer),
-        ...(Array.isArray(extraOptions) ? extraOptions : []), // Ensure 
+        ...(Array.isArray(extraOptions) ? extraOptions : []), // Ensure
         // extraOptions is an array before spreading
       ]);
       // console.log("All options:",allOptions)
@@ -198,9 +198,13 @@ const Game03 = () => {
       return;
     }
 
-    // Ensure the score is calculated before proceeding
+    // Filter only correctly answered questions
+    const correctData = data.filter((item) => {
+      const questionKey = item.question?.toLowerCase();
+      return answers[questionKey] === item.answer;
+    });
 
-    saveToFirebaseGame03(data); // Save the game data to Firebase
+    saveToFirebaseGame03(correctData); // Save only correct answers to Firebase
     localStorage.setItem(
       "greeting",
       `Huraay!!\nYou have completed all matching game.\nYour score : ${calculateScore()}/50!`
