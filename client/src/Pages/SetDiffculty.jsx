@@ -11,7 +11,7 @@ const SetDiffculty = () => {
 
   const handleNext = () => {
     // Navigate to the next page with the selected difficulty
-    console.log("Selected difficulty:", difficulty,gameName);
+    // console.log("Selected difficulty:", difficulty,gameName);
     if (gameName==null) {
   toast.error("Please select a game first.");
       navigate("/");

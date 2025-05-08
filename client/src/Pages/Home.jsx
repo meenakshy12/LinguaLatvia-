@@ -25,7 +25,7 @@ const Home = () => {
       results[db] = data; // Store the result for each database
     }
 
-    console.log(results); // Log the results for debugging
+    // console.log(results); // Log the results for debugging
     setTracking(results); // Set the tracking state with the results
   };
 
