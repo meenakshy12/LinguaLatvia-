@@ -85,7 +85,7 @@ const Home = () => {
             </p>
             <button
               onClick={() => {
-                navigate("/game01");
+                navigate("/setDiffculty?game=game01"); // Navigate to the game with difficulty selection
               }}
               className="mt-5 cursor-pointer py-2 bg-[#7CA7F2FA] rounded-full sm:px-10 px-5 shadow hover:bg-[#7CA7F2] hover:font-semibold transition"
             >
@@ -131,7 +131,7 @@ const Home = () => {
             </p>
             <button
               onClick={() => {
-                navigate("/game02");
+               navigate("/setDiffculty?game=game02"); 
               }}
               className="mt-5 cursor-pointer py-2 bg-[#7CA7F2FA] rounded-full sm:px-10 px-5 shadow hover:bg-[#7CA7F2] hover:font-semibold transition"
             >
@@ -176,7 +176,7 @@ const Home = () => {
             </p>
             <button
               onClick={() => {
-                navigate("/game03");
+                navigate("/setDiffculty?game=game03"); 
               }}
               className="mt-5 cursor-pointer py-2 bg-[#FFAB40FA] rounded-full sm:px-10 px-5 shadow hover:bg-[#FFAB40] hover:font-semibold transition"
             >
