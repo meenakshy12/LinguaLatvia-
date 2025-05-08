@@ -23,7 +23,7 @@ export const saveToFirebaseGame01 = async (latestData) => {
         // console.log("Combined game data:", combinedData);
         // Save both previous and latest data
         await setDoc(docRef, {gameData:combinedData}, { merge: true });
-        console.log("Data in document:", { previousData, latestData });
+        // console.log("Data in document:", { previousData, latestData });
         // console.log("Game data saved successfully!");
     } catch (error) {
         console.error("Error saving game data:", error);

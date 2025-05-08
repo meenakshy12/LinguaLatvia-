@@ -24,6 +24,7 @@ export default function Game01() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [correctAnswers, setCorrectAnswers] = useState([]);
   const [showCorrectWord, setShowCorrectWord] = useState(false);
+  const [undoStack, setUndoStack] = useState([]); // Stack to store undo actions
 
   const fetchWords = async () => {
     setLoading(true);
@@ -37,7 +38,7 @@ export default function Game01() {
       body: JSON.stringify({ data: previousData }),
     });
     const data = await response.json();
-    console.log("API response:", data); // Log the API response for debugging
+    // console.log("API response:", data); // Log the API response for debugging
     setWordList(data || [{ word: "hello", clue: "A common greeting" }]); // Replace with actual data from API
     setCurrentIndex(0);
     setLoading(false);
@@ -48,6 +49,26 @@ export default function Game01() {
   const handleLetterClick = (letter, index) => {
     setGuess((prev) => prev + letter);
     setLetters((prev) => prev.filter((_, i) => i !== index));
+    setUndoStack((prev) => [...prev, { letter, index }]); // Push action to undo stack
+  };
+
+  const handleUndo = () => {
+    if(showCorrectWord) {
+      toast.error("Cannot undo after revealing the correct word.");
+      return;
+    }
+    if (undoStack.length === 0) {
+      toast.error("Nothing to undo.");
+      return;
+    }
+    const lastAction = undoStack.pop(); // Get the last action
+    setUndoStack([...undoStack]); // Update the stack
+    setGuess((prev) => prev.slice(0, -1)); // Remove the last letter from the guess
+    setLetters((prev) => {
+      const newLetters = [...prev];
+      newLetters.splice(lastAction.index, 0, lastAction.letter); // Restore the letter at its original position
+      return newLetters;
+    });
   };
 
   const nextWord = () => {
@@ -59,23 +80,26 @@ export default function Game01() {
     if (!showCorrectWord) {
       if (guess === answer) {
         setCorrectAnswers((prev) => [...prev, { word: answer, clue }]);
-        console.log("Correct Answers:", [
-          ...correctAnswers,
-          { word: answer, clue },
-        ]);
+        // console.log("Correct Answers:", [
+        //   ...correctAnswers,
+        //   { word: answer, clue },
+        // ]);
       }
       setShowCorrectWord(true);
     } else {
       if (currentIndex + 1 < wordList.length) {
         setCurrentIndex((prev) => prev + 1);
         setShowCorrectWord(false);
+        setUndoStack([]); // Clear undo stack for the next word
       } else {
-        console.log("Game Over. Correct Answers:", correctAnswers);
+        // console.log("Game Over. Correct Answers:", correctAnswers);
         saveToFirebaseGame01(correctAnswers);
         const score = correctAnswers.length * 10; // Calculate score
         localStorage.setItem(
           "greeting",
-          `Huraay!!\nYou have completed the Latvian Word Builder Game!\nYour score: ${score}/${wordList.length * 10}`
+          `Huraay!!\nYou have completed the Latvian Word Builder Game!\nYour score: ${score}/${
+            wordList.length * 10
+          }`
         );
         navigate("/greeting");
       }
@@ -153,6 +177,14 @@ export default function Game01() {
               {letter}
             </motion.button>
           ))}
+        </div>
+        <div className="flex justify-center gap-2 mb-4">
+          <button
+            onClick={handleUndo}
+            className="bg-gray-500 text-white cursor-pointer px-4 py-2 rounded-md"
+          >
+            Undo
+          </button>
         </div>
         <div className="text-xl font-semibold mb-4 text-center">Guess Word</div>
         <div className="flex justify-center gap-2 mb-4">
