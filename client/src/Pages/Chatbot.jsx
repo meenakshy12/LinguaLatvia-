@@ -8,7 +8,38 @@ import { FiSend } from "react-icons/fi";
 // import Navbar from "../components/Navbar";
 import ChatgptTextRender from "../components/ChatgptTextRender";
 import TypingLoader from "../components/TypingLoader";
+const FirstMessageEn = `Sveiki! (Hello!) 👋
 
+Welcome to your Latvian learning assistant! I’m here to help you explore and master the Latvian language in a fun and engaging way. Whether you're a beginner or looking to refine your skills, I can assist you with:
+
+📖 Vocabulary Building – Learn new words, phrases, and expressions.
+
+📚 Grammar Guidance – Understand rules, sentence structure, and verb conjugations.
+
+💬 Conversational Practice – Engage in dialogues and improve speaking skills.
+
+🌍 Cultural Insights – Discover Latvian traditions, history, and idiomatic expressions.
+
+✍ Writing Assistance – Get help with composing texts, corrections, and feedback.
+
+🎯 Exercises & Quizzes – Test your knowledge with interactive challenges.`;
+
+
+const FirstMessageLT = `Sveiki! 👋
+
+Laipni lūdzam savā latviešu valodas mācību palīgā! Esmu šeit, lai palīdzētu jums izzināt un apgūt latviešu valodu jautrā un saistošā veidā. Neatkarīgi no tā, vai esat iesācējs vai vēlaties uzlabot savas prasmes, es varu jums palīdzēt:
+
+📖 Vārdu krājuma veidošana - apgūstiet jaunus vārdus, frāzes un izteicienus.
+
+📚 Gramatikas norādījumi - izprotiet noteikumus, teikuma struktūru un darbības vārdu konjugācijas.
+
+💬 Sarunu prakse – iesaistieties dialogos un uzlabojiet runas prasmes.
+
+🌍 Kultūras ieskats – atklāj latviešu tradīcijas, vēsturi un idiomātiskās izpausmes.
+
+✍ Rakstīšanas palīdzība — saņemiet palīdzību tekstu sastādīšanā, labojumos un atsauksmēs.
+
+🎯 Vingrinājumi un viktorīnas – pārbaudiet savas zināšanas ar interaktīviem izaicinājumiem.`;
 const Chatbot = () => {
   const [input, setInput] = useState("");
   const [posts, setPosts] = useState([]);
@@ -134,6 +165,18 @@ const Chatbot = () => {
       onSubmit();
     }
   };
+
+  useEffect(() => {
+    const firstBotMessage = {
+      id: Date.now(),
+      type: "bot",
+      post: { lt: FirstMessageLT, en: FirstMessageEn, currentLang: "en" },
+    };
+
+    setTimeout(() => {
+      setPosts((prevState) => [...prevState, firstBotMessage]);
+    }, 2000);
+  }, []);
 
   return (
     <div className="h-[calc(100dvh-64px)] relative flex flex-col ">
