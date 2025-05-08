@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import Loader from "../components/Loader";
 import { toast } from "react-hot-toast";
 import { getFromFirebaseGame03, saveToFirebaseGame03 } from "../helpers/gam03";
 
 const Game03 = () => {
+  const [searchParams] = useSearchParams();
+      const difficulty = searchParams.get("difficulty") || "easy"; // Default to "easy" if not provided
   const [answers, setAnswers] = useState({});
   const [questions, setQuestions] = useState([]);
   const [options, setOptions] = useState([]);
@@ -27,7 +29,7 @@ const Game03 = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ data: previousData }), // Send previous data to the API
+          body: JSON.stringify({ data: previousData,difficulty }), // Send previous data to the API
         }
       );
       const { gameData, extraOption } = await response.json();

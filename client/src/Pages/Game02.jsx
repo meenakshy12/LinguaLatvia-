@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import ProgressBricks from "../components/ProgressBricks";
 import { motion } from "framer-motion";
 import Loader from "../components/Loader";
@@ -73,6 +73,8 @@ function generateDefaultQuestions() {
 }
 
 const Game02 = () => {
+  const [searchParams] = useSearchParams();
+  const difficulty = searchParams.get("difficulty") || "easy"; // Default to "easy" if not provided
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null); // State to track errors
@@ -97,7 +99,7 @@ const Game02 = () => {
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ data: previousQuestions }), // Send previous questions to the server
+            body: JSON.stringify({ data: previousQuestions,difficulty }), // Send previous questions to the server
           }
         );
         // console.log("Response:", response); // Log the response for debugging

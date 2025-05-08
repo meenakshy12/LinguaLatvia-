@@ -150,14 +150,16 @@ Your main goals are:
 
 
 app.post("/game01", async (req, res) => {
-  const previous = req.body.data || []; // Get the previous data from the request body
+  const { data: previous = [], difficulty } = req.body; // Extract difficulty 
+  //from request body
+  // console.log(difficulty,previous)
   const parseData = `Here is the list of words already provided: ${JSON.stringify(previous.map(item => item.word))}. Do not repeat any of these.`; // Refined prompt for distinct data
 
   const messages = [
     {
       role: "system",
-      content: `You are a helpful assistant that provides five unique Latvian words with their English meanings as clues. Respond in JSON format:
-[{ "word": "...", "clue": "..." }]. Ensure the words are unique and do not repeat any previously provided words.`,
+      content: `You are a helpful assistant that provides five unique Latvian words with their English meaning as clue. Focus on the difficulty level: ${difficulty}. Respond in JSON format:
+[{ "word": "hello", "clue": "sveiki" }]. Ensure the words are unique and do not repeat any previously provided words.`,
     },
     {
       role: "system",
@@ -206,13 +208,15 @@ app.post("/game01", async (req, res) => {
 
 app.post("/game02", async (req, res) => {
   try {
-    const previous = req.body.data || []; // Get the previous data from the request body
-    const parseData = `Here is the list of questions already provided: ${JSON.stringify(previous)}. Do not repeat any of these.`; // Refined prompt for distinct data
+    const { data: previous = [], difficulty } = req.body; // Extract difficulty from request body
+    // console.log(previous, difficulty);
+
+    const parseData = `Here is the list of questions already provided: ${JSON.stringify(previous)}. Do not repeat any of these.`;
 
     const messages = [
       {
         role: "system",
-        content: `You are an assistant that generates simple Latvian vocabulary questions for children learning Latvian. Each question must:
+        content: `You are an assistant that generates Latvian vocabulary questions for children learning Latvian. Focus on the difficulty level: ${difficulty}. Each question must:
 - Be grammatically correct and natural.
 - Include a sentence with a missing word (fill-in-the-blank format).
 - Provide an English translation of the sentence.
@@ -261,7 +265,6 @@ ${parseData}`,
     const content = response.data.choices[0].message.content;
 
     // Validate and parse the JSON response
-    // asda
     let questions;
     try {
       questions = JSON.parse(content);
@@ -272,7 +275,7 @@ ${parseData}`,
       console.error("Error parsing JSON response:", parseError);
       return res.status(500).send({ error: "Failed to parse AI response." });
     }
-    // console.log("Parsed questions:", questions); // Log the parsed <questions></questions>
+
     res.status(200).send({ gameData: questions });
   } catch (error) {
     console.error("Error in /game02:", error.response?.data || error.message || error);
@@ -282,14 +285,22 @@ ${parseData}`,
 
 app.post("/game03", async (req, res) => {
   try {
-    const previous = req.body.data || []; // Get the previous data from the request body
-    const parseData = `Here is the list of translations already provided: ${JSON.stringify(previous)}. Do not repeat any of these.`; // Refined prompt for distinct data
-    // console.log("Previous data:", parseData); // Log the previous data
+    const { data: previous = [], difficulty } = req.body; // Extract difficulty 
+    // from request body
+    // console.log(difficulty,previous)
+    const parseData = `Here is the list of translations already provided: ${JSON.stringify(previous)}. Do not repeat any of these.`;
 
     const messages = [
       {
         role: "system",
-        content: "You are a helpful assistant that translates simple English words or phrases into Latvian. Respond in JSON format with 4 items like this format and two extra option to confuse user to give answer in latvain lanaguge extra option: [matchQ:[{question: '', answer: ''}, ...],extraoption:['','']].",
+        content: `You are a helpful assistant that translates simple English words or phrases into Latvian. Focus on the difficulty level: ${difficulty}. Respond in JSON format with 4 items like this format and two extra options to confuse the user: 
+{
+  "matchQ": [
+    { "question": "...", "answer": "..." },
+    ...
+  ],
+  "extraOption": ["...", "..."]
+}. Ensure the translations are unique and do not repeat any previously provided data.`,
       },
       {
         role: "system",
@@ -297,7 +308,7 @@ app.post("/game03", async (req, res) => {
       },
       {
         role: "user",
-        content: "Provide 4 unique English to Latvian translations that have not been given before.",
+        content: "Provide 4 unique English to Latvian translations with two extra options.",
       },
     ];
 
@@ -318,15 +329,12 @@ app.post("/game03", async (req, res) => {
 
     const response = await axios.request(options);
     let content = response.data.choices[0].message.content;
-    
-    // console.log("content:", content); // Log the response content
-    // Remove Markdown formatting (e.g., ```json and ```)
-    content = content.replace(/```json|```/g, "").trim();
 
     // Parse the JSON response and handle the structure
+    content = content.replace(/```json|```/g, "").trim();
     const parsedContent = JSON.parse(content);
     const matchQ = parsedContent.matchQ || [];
-    const extraOption = parsedContent.extraoption || [];
+    const extraOption = parsedContent.extraOption || [];
 
     res.status(200).send({ gameData: matchQ, extraOption });
   } catch (error) {

@@ -7,7 +7,7 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import Loader from "../components/Loader";
 import ProgressBricks from "../components/ProgressBricks";
@@ -15,6 +15,9 @@ import { getFromFirebaseGame01, saveToFirebaseGame01 } from "../helpers/game01";
 
 export default function Game01() {
   const navigate = useNavigate();
+  
+    const [searchParams] = useSearchParams();
+    const difficulty = searchParams.get("difficulty") || "easy"; // Default to "easy" if not provided
   const [letters, setLetters] = useState([]);
   const [clue, setClue] = useState("");
   const [answer, setAnswer] = useState("");
@@ -35,9 +38,10 @@ export default function Game01() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ data: previousData }),
+      body: JSON.stringify({ data: previousData, difficulty }),
     });
     const data = await response.json();
+    console.log("Fetched words:", data); // Log the fetched words for debugging
     // console.log("API response:", data); // Log the API response for debugging
     setWordList(data || [{ word: "hello", clue: "A common greeting" }]); // Replace with actual data from API
     setCurrentIndex(0);
