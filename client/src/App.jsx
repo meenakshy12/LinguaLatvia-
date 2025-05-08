@@ -11,6 +11,7 @@ import Game01 from './Pages/Game01'
 import Greeting from './Pages/Greeting'
 import Game02 from './Pages/Game02'
 import Game03 from './Pages/Game03'
+import SetDiffculty from './Pages/SetDiffculty'
 
 const App = () => {
   return (
@@ -23,6 +24,7 @@ const App = () => {
             <Route path="/login" element={<Login/>} />
             <Route path="/signup" element={<SignUp/>} />
             <Route path="/chatbot" element={        <Middleware><Wrapper><Chatbot/></Wrapper></Middleware>} />
+            <Route path="setDiffculty" element={<Middleware>        <Wrapper><SetDiffculty/></Wrapper></Middleware>} ></Route>
             <Route path="/game01" element={        <Middleware><Wrapper><Game01/></Wrapper></Middleware>} /> 
             <Route path="/game02" element={        <Middleware><Wrapper><Game02/></Wrapper></Middleware>} /> 
             <Route path="/game03" element={        <Middleware><Wrapper><Game03/></Wrapper></Middleware>} /> 
