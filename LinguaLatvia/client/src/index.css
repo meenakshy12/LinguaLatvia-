@@ -1,0 +1,106 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import "tailwindcss";
+:root {
+    font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 400;
+
+    background: white;
+    color: black;
+
+    
+}
+body{
+  overflow-x: hidden;
+}
+ .shadow-custom{
+  box-shadow: 4px 2px 4px 2px #00000040;
+ }
+
+
+*{
+  font-family: "Poppins", sans-serif;
+  /* font-weight: 400;
+  font-style: normal; */
+}
+
+
+/* //loader css  */
+.loader_loading {
+    width: 65px;
+    aspect-ratio: 1;
+    --g: radial-gradient(farthest-side, transparent calc(95% - 3px), #1B4A7E calc(100% - 3px) 98%, transparent 101%) no-repeat;
+    background: var(--g), var(--g), var(--g);
+    background-size: 30px 30px;
+    animation: l10 1.5s infinite;
+  }
+  
+  @keyframes l10 {
+    0% {
+      background-position: 0 0, 0 100%, 100% 100%;
+    }
+    25% {
+      background-position: 100% 0, 0 100%, 100% 100%;
+    }
+    50% {
+      background-position: 100% 0, 0 0, 100% 100%;
+    }
+    75% {
+      background-position: 100% 0, 0 0, 0 100%;
+    }
+    100% {
+      background-position: 100% 100%, 0 0, 0 100%;
+    }
+  }
+
+
+
+/* scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+/* Style for bold text enclosed in double asterisks */
+.bold-text {
+    font-weight: bold;
+}
+
+
+/* HTML: <div class="loader"></div> */
+.dot-typing {
+  position: relative;
+  left: -9999px;
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  background-color: #1B4A7E;
+  color: #1B4A7E;
+  box-shadow: 9984px 0 0 0 #1B4A7E, 9999px 0 0 0 #1B4A7E, 10014px 0 0 0 #1B4A7E;
+  animation: dot-typing 1.5s infinite linear;
+}
+
+@keyframes dot-typing {
+  0% {
+    box-shadow: 9984px 0 0 0 #1B4A7E, 9999px 0 0 0 #1B4A7E, 10014px 0 0 0 #1B4A7E;
+  }
+  16.667% {
+    box-shadow: 9984px -10px 0 0 #1B4A7E, 9999px 0 0 0 #1B4A7E, 10014px 0 0 0 #1B4A7E;
+  }
+  33.333% {
+    box-shadow: 9984px 0 0 0 #1B4A7E, 9999px 0 0 0 #1B4A7E, 10014px 0 0 0 #1B4A7E;
+  }
+  50% {
+    box-shadow: 9984px 0 0 0 #1B4A7E, 9999px -10px 0 0 #1B4A7E, 10014px 0 0 0 #1B4A7E;
+  }
+  66.667% {
+    box-shadow: 9984px 0 0 0 #1B4A7E, 9999px 0 0 0 #1B4A7E, 10014px 0 0 0 #1B4A7E;
+  }
+  83.333% {
+    box-shadow: 9984px 0 0 0 #1B4A7E, 9999px 0 0 0 #1B4A7E, 10014px -10px 0 0 #1B4A7E;
+  }
+  100% {
+    box-shadow: 9984px 0 0 0 #1B4A7E, 9999px 0 0 0 #1B4A7E, 10014px 0 0 0 #1B4A7E;
+  }
+}
