@@ -21,15 +21,52 @@ app.post("/", async (req, res) => {
   try {
     console.log("🔍 Request Body:", req.body); // ✅ Log the request body
 
-    // Check if the request body is empty
-    const result = await deeplClient.translateText(
-      req.body.input,
-      null,
-      "en-US"
-    ); // Updated targetLang to 'en-US'
-    // console.log("result:", result); // ✅ Log the translation result
+    const { input, conversationHistory = [] } = req.body;
+
+    // Translate the latest user input to English
+    const result = await deeplClient.translateText(input, null, "en-US");
     const translatedText = result.text;
-    // console.log("Translated Text:", translatedText); // ✅ Log the translated text
+
+    // Build messages array for OpenAI API including system prompt and conversation history
+    const messages = [
+      {
+        role: "system",
+        content: `You are a friendly Latvian language partner named LinguaLatvia. You chat naturally with the user in an informal and friendly tone, like a native Latvian friend helping someone practice their Latvian.
+
+The user is learning Latvian and may make grammar mistakes or write awkward sentences. Your job is to:
+
+1. Understand what they’re trying to say (even if it’s a bit incorrect).
+2. Reply with a friendly message in English (which will be translated into Latvian).
+3. Gently point out and correct any grammar or sentence structure mistakes they made, if any.
+4. When relevant, help the user understand Latvian declensions (like noun case changes) in a chill and simple way—just enough to explain why a word changed. Keep it casual, not technical.
+5. Offer 2–3 fun or natural response **options** in Latvian that the user could choose from to keep the conversation going (e.g., simple follow-ups, casual questions, or reactions). These should be beginner-friendly and match the context.
+6. Occasionally ask fun, simple **multiple choice questions** in Latvian to test the user's vocabulary or grammar. Do **not** reveal the answer right away—wait for the user's guess first, then respond with feedback.
+7. **Only roleplay** specific scenarios (e.g., shopkeeper, waiter, travel agent) **if the user requests it**. When roleplaying, stay in character while still helping them learn.
+
+Be encouraging and supportive. Make the conversation feel natural and not like a classroom. Use a casual tone, slang, emojis, or cultural references if appropriate.
+
+Your main goals are:
+- Help the user improve their Latvian.
+- Casually reinforce proper usage of declensions, especially when words change as subjects or objects.
+- Keep the conversation flowing like a real friend.
+- **Avoid repeating the same suggestion or correction multiple times.**
+- **Ensure your responses are varied and do not repeat the same sentences or phrases. Keep it fresh and engaging.**
+- **Make the user feel confident and excited to keep learning.**
+
+`,
+      },
+      // Include previous conversation history messages
+      ...conversationHistory.map((msg) => ({
+        role: msg.role,
+        content: msg.content,
+      })),
+      // Add the latest user message with translated text
+      {
+        role: "user",
+        content: translatedText,
+      },
+    ];
+
     const options = {
       method: "POST",
       url: "https://api.openai.com/v1/chat/completions",
@@ -39,32 +76,7 @@ app.post("/", async (req, res) => {
       },
       data: {
         model: "gpt-4o-mini",
-        messages: [
-          {
-            role: "system",
-            content: `You are a friendly Latvian language partner named LinguaLatvia. You chat naturally with the user in an informal and friendly tone, like a native Latvian friend helping someone practice their Latvian.
-
-The user is learning Latvian and may make grammar mistakes or write awkward sentences. Your job is to:
-
-1. Understand what they’re trying to say (even if it’s a bit incorrect).
-2. Reply with a friendly message in English (to be translated to Latvian).
-3. Gently point out and correct any grammar or sentence structure mistakes they made, if any.
-4. Optionally, explain a better way to say the sentence naturally in Latvian.
-
-Be encouraging and supportive. Make the conversation feel natural and not like a classroom. Use casual tone, slang, or cultural references if appropriate. 
-
-Your main goals are:
-- Help the user improve their Latvian.
-- Keep the conversation flowing like a real friend.
-- **Avoid repeating the same suggestion or correction multiple times.**
-- **Ensure your responses are varied and do not repeat the same sentences or phrases. Keep it fresh and engaging.**
-`,
-          },
-          {
-            role: "user",
-            content: translatedText,
-          },
-        ],
+        messages,
         temperature: 0.9,
         max_tokens: 1024,
         top_p: 0.9,
@@ -72,19 +84,18 @@ Your main goals are:
         presence_penalty: 0,
       },
     };
+
     const response = await axios.request(options);
     const content = response.data.choices[0].message.content;
-    // console.log("content:", content);
-    //  reconvert into latvian language
 
-    const result2 = await deeplClient.translateText(content, null, "lv"); // Updated targetLang to 'lv'
-    // console.log("result:", result); // ✅ Log the translation result
-    // console.log("Translated Text:", result2.text); // ✅ Log the translated text
+    // Translate the AI response back to Latvian
+    const result2 = await deeplClient.translateText(content, null, "lv");
+
     res.status(200).send({
       bot: {
         en: content,
-        lt:result2.text,
-      }
+        lt: result2.text,
+      },
     });
   } catch (error) {
     console.log("FAILED:", req.body.input);
@@ -200,12 +211,6 @@ app.post("/game01", async (req, res) => {
   }
 });
 
-// // Endpoint to check answer
-// app.post('/api/check', (req, res) => {
-//   const { guess, answer } = req.body;
-//   res.json({ correct: guess.toLowerCase() === answer.toLowerCase() });
-// });
-
 app.post("/game02", async (req, res) => {
   try {
     const { data: previous = [], difficulty } = req.body; // Extract difficulty from request body
@@ -218,10 +223,19 @@ app.post("/game02", async (req, res) => {
         role: "system",
         content: `You are an assistant that generates Latvian vocabulary questions for children learning Latvian. Focus on the difficulty level: ${difficulty}. Each question must:
 - Be grammatically correct and natural.
+- Ensure adjective-noun gender agreement in Latvian sentences.
 - Include a sentence with a missing word (fill-in-the-blank format).
 - Provide an English translation of the sentence.
 - Include three options for the missing word.
+- The options must be grammatically correct and agree in case, number, and gender with the sentence context.
 - Specify the correct answer.
+
+Examples of correct adjective-noun agreement:
+- "vārna ir melna" (The crow is black) - feminine noun with feminine adjective
+- "suns ir melns" (The dog is black) - masculine noun with masculine adjective
+- "upe ir dzidra" (The river is clear) - feminine noun with feminine adjective
+
+Avoid options that do not match the sentence context in gender, number, or case.
 
 Respond in this JSON format:
 [

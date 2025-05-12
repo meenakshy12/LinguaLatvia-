@@ -46,9 +46,19 @@ const Chatbot = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchBotResponse = async () => {
+    // Prepare conversation history messages for backend
+    const conversationHistory = posts
+      .filter((msg) => msg.type === "user" || msg.type === "bot")
+      .map((msg) => {
+        return {
+          role: msg.type === "user" ? "user" : "assistant",
+          content: msg.post.en || msg.post.lt || "",
+        };
+      });
+
     const { data } = await axios.post(
       `${import.meta.env.VITE_SERVER_URL}`,
-      { input },
+      { input, conversationHistory },
       {
         headers: {
           "Content-Type": "application/json",

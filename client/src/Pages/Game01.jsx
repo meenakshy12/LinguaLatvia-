@@ -15,6 +15,9 @@ import { getFromFirebaseGame01, saveToFirebaseGame01 } from "../helpers/game01";
 
 export default function Game01() {
   const navigate = useNavigate();
+
+  // Removed timer state and effect as timer is no longer needed
+
   
     const [searchParams] = useSearchParams();
     const difficulty = searchParams.get("difficulty") || "easy"; // Default to "easy" if not provided
@@ -167,6 +170,11 @@ export default function Game01() {
         subheading="(Arrange the letters to form the correct word)"
       />
       <div className="text-xl font-semibold mb-4 text-center">Clue: {clue}</div>
+
+      {/* Removed timer display as timer is no longer defined */}
+      {/* <div className="text-center mb-4 font-semibold text-red-600">
+        Time left: {timeLeft} second{timeLeft !== 1 ? "s" : ""}
+      </div> */}
 
       <div className="grid grid-cols-1 gap-4 pt-3 sm:mx-0 mx-5">
         <div className="flex flex-wrap justify-center gap-3 mb-4">
