@@ -3,7 +3,6 @@ import cors from "cors";
 import * as dotenv from "dotenv";
 import axios from "axios";
 import { deeplClient } from "./config/deepl.js";
-import fs from "fs"; // <-- Add this at the top with other imports
 
 dotenv.config();
 
