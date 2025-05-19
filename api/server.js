@@ -8,7 +8,15 @@ import fs from "fs"; // <-- Add this at the top with other imports
 dotenv.config();
 
 const app = express();
-app.use(cors());
+const corsOptions = {
+  origin: "https://lingua-latvia-z3rk.vercel.app",
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  optionsSuccessStatus: 204,
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions)); // Enable preflight for all routes
 app.use(express.json());
 
 app.get("/", async (req, res) => {
