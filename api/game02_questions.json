@@ -1,0 +1,112 @@
+[
+  {
+    "sentence": "_ _ _ ir mīļs",
+    "translation": "The puppy is dear",
+    "options": [
+      "putns",
+      "kucēns",
+      "kaķis"
+    ],
+    "correctAnswer": "kucēns"
+  },
+  {
+    "sentence": "_ _ _ ir dīķis",
+    "translation": "The pond is big",
+    "options": [
+      "ezeru",
+      "dīķis",
+      "upe"
+    ],
+    "correctAnswer": "dīķis"
+  },
+  {
+    "sentence": "_ _ _ ir slīps",
+    "translation": "The roof is sloped",
+    "options": [
+      "koks",
+      "mājas",
+      "jumts"
+    ],
+    "correctAnswer": "jumts"
+  },
+  {
+    "sentence": "_ _ _ ir dārgas",
+    "translation": "The jewels are expensive",
+    "options": [
+      "sniegs",
+      "ziedi",
+      "dārgakmeņi"
+    ],
+    "correctAnswer": "dārgakmeņi"
+  },
+  {
+    "sentence": "_ _ _ ir jūtīga",
+    "translation": "The flower is delicate",
+    "options": [
+      "roze",
+      "lapa",
+      "zieds"
+    ],
+    "correctAnswer": "roze"
+  },
+  {
+    "sentence": "_ _ _ ir smaržīgas",
+    "translation": "The spices are fragrant",
+    "options": [
+      "garšvielas",
+      "augi",
+      "ziedi"
+    ],
+    "correctAnswer": "garšvielas"
+  },
+  {
+    "sentence": "_ _ _ ir saldas",
+    "translation": "The candies are sweet",
+    "options": [
+      "saldējums",
+      "konfektes",
+      "augļi"
+    ],
+    "correctAnswer": "konfektes"
+  },
+  {
+    "sentence": "_ _ _ ir zaļas",
+    "translation": "The vegetables are green",
+    "options": [
+      "dārzeņi",
+      "augļi",
+      "ziedi"
+    ],
+    "correctAnswer": "dārzeņi"
+  },
+  {
+    "sentence": "_ _ _ ir tīkams",
+    "translation": "The apple is tasty",
+    "options": [
+      "ābols",
+      "banāns",
+      "zieds"
+    ],
+    "correctAnswer": "ābols"
+  },
+  {
+    "sentence": "_ _ _ ir sarkanas",
+    "translation": "The tomatoes are red",
+    "options": [
+      "tomāti",
+      "bumbieri",
+      "āboli"
+    ],
+    "correctAnswer": "tomāti"
+  },
+  {
+    "sentence": "_ _ _ ir garšīgas",
+    "translation": "The pastries are tasty",
+    "options": [
+      "maize",
+      "pīrāgi",
+      "saldējums"
+    ],
+    "correctAnswer": "pīrāgi"
+  }
+]
