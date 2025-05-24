@@ -3,7 +3,7 @@
 **LiguaLativa** is an interactive bilingual platform designed to help users practice and improve their Latvian language skills through a variety of engaging methods. Powered by **OpenAI** and **DeepL**, LiguaLativa facilitates smooth communication between English and Latvian, offering accurate translations and grammar corrections.
 
 In addition to the chatbot functionality, **LiguaLativa** now includes Latvian language learning games to enhance the learning experience:
-- **Word Meaning Game** (Latvian and English): Helps users learn and match words with their meanings.
+- **Latvian word builder game**: A puzzle game where players need to arrange shuffled letters to correct a Latvian word based on the clue.
 - **Fill in the Blanks**: Tests users’ vocabulary and sentence structure skills.
 - **Word Matching Game**: Matches Latvian words with their English equivalents.
 - **Level Tracker**: Tracks the student’s progress over time, helping learners visualize their improvement and motivation.
@@ -17,7 +17,7 @@ In addition to the chatbot functionality, **LiguaLativa** now includes Latvian l
 - **Level Tracker** to track student progress and learning levels
 - **Games for Learning**:
 
-     1. **Word Meaning Game**: Learn the meaning of words in both Latvian and English, with integrated **Text-to-Speech (TTS)** for pronunciation.
+     1. **Latvian word builder game**: A puzzle game where players need to arrange shuffled letters to correct a Latvian word based on the clue
      2. **Fill in the Blanks Game**: Test vocabulary and sentence structure by completing missing words.
      3. **Word Matching Game**: Match Latvian words with their English counterparts.
 
